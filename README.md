@@ -16,7 +16,6 @@ Professor Heather Bateman - Professor and Researcher of Biology
 
 ## Notes
 
-
 using version 16
 
 Field-day-2022-pwa : npm start
@@ -25,14 +24,14 @@ Field-day-2022-webUI: npm app:start
 
 ### Firebase Instructions:
 
-- Register App
-- Add Firebase
-- npm install firebase
-- create firebase.js in a directory within your project, we put ours in utils
-- Install Firebase CLI
-- npm install -g firebase-tools
-- build your app
-- deploy to firebase
-- firebase login
-- firebase init
-- firebase deploy
+-   Register App
+-   Add Firebase
+-   npm install firebase
+-   create firebase.js in a directory within your project, we put ours in utils
+-   Install Firebase CLI
+-   npm install -g firebase-tools
+-   build your app
+-   deploy to firebase
+-   firebase login
+-   firebase init
+-   firebase deploy
