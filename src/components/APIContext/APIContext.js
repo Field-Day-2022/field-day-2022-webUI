@@ -58,22 +58,14 @@ class APIProviderClass extends Component {
     addDataForm = (form) => {
         const { dataForms, project_id } = this.state;
         const formExists = dataForms.find((df) => df.form_id === form.form_id);
-        if (formExists) {
-            return this.apiService.putDataForm(form);
-        } else {
-            return this.apiService.postDataForm(form, project_id);
-        }
+        return formExists ? this.apiService.putDataForm(form) : this.apiService.postDataForm(form, project_id);
     };
 
     getProjectName = (id) => {
         const proj = this.state.projects.find((p) => {
             return p.project_id === id;
         });
-        if (proj) {
-            return proj.project_name;
-        } else {
-            return null;
-        }
+        return proj ? proj.project_name : null;
     };
 
     getAnswerSet = (setName) => {
@@ -83,21 +75,13 @@ class APIProviderClass extends Component {
     addSessionForm = (form) => {
         const { sessionForms, project_id } = this.state;
         const formExists = sessionForms.find((sf) => sf.form_id === form.form_id);
-        if (formExists) {
-            return this.apiService.putDataForm(form);
-        } else {
-            return this.apiService.postDataForm(form, project_id);
-        }
+        return formExists ? this.apiService.putDataForm(form) : this.apiService.postDataForm(form, project_id);
     };
 
     addAnswerSet = (set) => {
         const { answerSets } = this.state;
         const setExists = answerSets.find((s) => s.set_name === set.set_name);
-        if (setExists) {
-            return this.apiService.putAnswerSet(set);
-        } else {
-            return this.apiService.postAnswerSet(set);
-        }
+        return setExists ? this.apiService.putAnswerSet(set) : this.apiService.postAnswerSet(set);
     };
 
     addEntry = async (entry) => {
