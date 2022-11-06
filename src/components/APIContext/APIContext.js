@@ -58,7 +58,9 @@ class APIProviderClass extends Component {
     addDataForm = (form) => {
         const { dataForms, project_id } = this.state;
         const formExists = dataForms.find((df) => df.form_id === form.form_id);
-        return formExists ? this.apiService.putDataForm(form) : this.apiService.postDataForm(form, project_id);
+        return formExists
+            ? this.apiService.putDataForm(form)
+            : this.apiService.postDataForm(form, project_id);
     };
 
     getProjectName = (id) => {
@@ -75,7 +77,9 @@ class APIProviderClass extends Component {
     addSessionForm = (form) => {
         const { sessionForms, project_id } = this.state;
         const formExists = sessionForms.find((sf) => sf.form_id === form.form_id);
-        return formExists ? this.apiService.putDataForm(form) : this.apiService.postDataForm(form, project_id);
+        return formExists
+            ? this.apiService.putDataForm(form)
+            : this.apiService.postDataForm(form, project_id);
     };
 
     addAnswerSet = (set) => {
