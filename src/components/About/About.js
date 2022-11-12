@@ -68,7 +68,7 @@ const styles = (theme) => ({
 });
 
 const About = (props) => {
-    const [state, setState] = useState({expanded: null});
+    const [state, setState] = useState({ expanded: null });
     const { classes } = props;
 
     const handleChange = (panel) => (event, expanded) => {
@@ -104,42 +104,39 @@ const About = (props) => {
                                 <Paper elevation={0} className={classes.descriptionPaper}>
                                     <Typography variant="body1">
                                         <b>Data Forms</b> are used for each unique item to be
-                                        tracked. Let's say we would to collect data for mammals.
-                                        We start by creating a form to capture all of the
-                                        information about the mammals we want to track. For each
-                                        mammal attribute, we add a field to record information
-                                        about that attribute.
-                                        <b> Prompts</b> are the name of the field. So to measure
-                                        the mammal's length, we would have a prompt called
-                                        "Length". Then we can define the
-                                        <b> Field Type</b>. The field type could be a number,
-                                        text field (single line), text area (multiline) or
-                                        another option from the drop down menu. Finally, for
-                                        each field we can indicate if that field is unique,
-                                        identifying or required when entering the data in the
-                                        mobile application.
+                                        tracked. Let's say we would to collect data for mammals. We
+                                        start by creating a form to capture all of the information
+                                        about the mammals we want to track. For each mammal
+                                        attribute, we add a field to record information about that
+                                        attribute.
+                                        <b> Prompts</b> are the name of the field. So to measure the
+                                        mammal's length, we would have a prompt called "Length".
+                                        Then we can define the
+                                        <b> Field Type</b>. The field type could be a number, text
+                                        field (single line), text area (multiline) or another option
+                                        from the drop down menu. Finally, for each field we can
+                                        indicate if that field is unique, identifying or required
+                                        when entering the data in the mobile application.
                                     </Typography>
                                     <br />
                                     <Typography variant="body1">
                                         <b>Session Forms</b> are used to define fields that are
                                         applicable to an entire data collection outing.{' '}
-                                        <b>Starting Form Fields</b> define information to
-                                        capture at the start of an outing (such as the recorders
-                                        name/id).
+                                        <b>Starting Form Fields</b> define information to capture at
+                                        the start of an outing (such as the recorders name/id).
                                         <b> Ending Form Fields </b>
-                                        are displayed at the end of the mobile session. An
-                                        example would be to leave final comments about the data
-                                        collection session.
+                                        are displayed at the end of the mobile session. An example
+                                        would be to leave final comments about the data collection
+                                        session.
                                     </Typography>
                                     <br />
                                     <Typography variant="body1">
                                         <b>Answer Sets</b> are used to generate lists to quickly
-                                        pick from when entering data in the mobile app. A list
-                                        of species could be generated as an answer set. Then
-                                        that answer set can be used in a <b>combo box</b> field
-                                        type for "species". This will help make sure that valid
-                                        data is easily entered by the recorder on the mobile
-                                        application.
+                                        pick from when entering data in the mobile app. A list of
+                                        species could be generated as an answer set. Then that
+                                        answer set can be used in a <b>combo box</b> field type for
+                                        "species". This will help make sure that valid data is
+                                        easily entered by the recorder on the mobile application.
                                     </Typography>
                                 </Paper>
                             </ExpansionPanelDetails>
@@ -159,33 +156,32 @@ const About = (props) => {
                             <ExpansionPanelDetails>
                                 <Typography variant="body1">
                                     To <b>view</b> specific entries for sessions or data form
-                                    entities, click on the corresponding item on the left
-                                    navigation menu. Individual entities (data forms) or
-                                    sessions can be edited or removed with the proper access
-                                    level. This level is indicated by the presence of a pencil
-                                    icon (edit) and a trash icon (delete).
+                                    entities, click on the corresponding item on the left navigation
+                                    menu. Individual entities (data forms) or sessions can be edited
+                                    or removed with the proper access level. This level is indicated
+                                    by the presence of a pencil icon (edit) and a trash icon
+                                    (delete).
                                     <br />
                                     <br />
                                     To <b>delete</b> an entire entry, click the trash icon and
                                     confirm removal of this entry.
                                     <br />
                                     <br />
-                                    To<b> edit </b>data, click the edit icon on the row of data
-                                    to enter edit mode. Then data can be changed. Certain
-                                    sensitive data, such as dates and times are not able to be
-                                    modified without corrupting the data. Therefore, if this
-                                    information is incorrect, it is recommended to delete the
-                                    entire entry and add a new one with the correct information.
-                                    The remaining fields are able to be edited in place. Once
-                                    the desired changes have been made, click the check mark to
-                                    save the edits made. <br />
+                                    To<b> edit </b>data, click the edit icon on the row of data to
+                                    enter edit mode. Then data can be changed. Certain sensitive
+                                    data, such as dates and times are not able to be modified
+                                    without corrupting the data. Therefore, if this information is
+                                    incorrect, it is recommended to delete the entire entry and add
+                                    a new one with the correct information. The remaining fields are
+                                    able to be edited in place. Once the desired changes have been
+                                    made, click the check mark to save the edits made. <br />
                                     <br />
                                     To <b>cancel</b> the changes, simply click the "X" icon to
                                     return to view mode. <br />
                                     <br />
-                                    To export <b>data</b>, click on the download icon located on
-                                    the upper right corner of the table view. This will begin a
-                                    download in csv format.
+                                    To export <b>data</b>, click on the download icon located on the
+                                    upper right corner of the table view. This will begin a download
+                                    in csv format.
                                 </Typography>
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
@@ -203,16 +199,16 @@ const About = (props) => {
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
                                 <Typography variant="body1">
-                                    The first time syncing with the server, tap <b>Sync</b> in
-                                    the Android app and enter the server information. After the
-                                    server information is entered, the mobile app can be synced
-                                    with the web server.
+                                    The first time syncing with the server, tap <b>Sync</b> in the
+                                    Android app and enter the server information. After the server
+                                    information is entered, the mobile app can be synced with the
+                                    web server.
                                     <br />
                                     <br />
                                     <i>
-                                        * As a best practice, it is recommended to sync the
-                                        mobile application before and after data collection to
-                                        make sure information is up to date.
+                                        * As a best practice, it is recommended to sync the mobile
+                                        application before and after data collection to make sure
+                                        information is up to date.
                                     </i>
                                 </Typography>
                             </ExpansionPanelDetails>
@@ -222,7 +218,7 @@ const About = (props) => {
             </div>
         </div>
     );
-}
+};
 
 About.propTypes = {
     classes: PropTypes.object.isRequired,
