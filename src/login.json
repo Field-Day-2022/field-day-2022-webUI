@@ -1,0 +1,12 @@
+{
+    "type": "service_account",
+    "project_id": "hale-silicon-283105",
+    "private_key_id": "8aeec239d48293d5c1884189583a9e4687ae864f",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCeOMsKxpHjIZnd\nFP2sNZTQuiQd4hbj7mDkivbApaygFzd3Rc27yVynTyADdIyGodYERSPcPWDos834\nn6Lx4LXDGzUG+62gLh4Jp/RL5Oh3M7Ew83QOmCHe8/yGn7XqNMrZSH/8P33Q2mW7\n6vBXp1HHuRsRdVtTdmlCiwiv4hEDPdvuSlnf/aU7Ecb7g4e8Fct7Emf4WvSxknGH\n1ZowNQoe/BfwB2MGRpG++/PMrxFFP8VY91XizfMbXKJgqdy+YVwk9u6vxihvbFvN\nQgdE7Vrnr7YADO6CWNoGbjm0MBo9s1NNawc2HRndtk/CP1Ucz3UIzjGXoaOquYgs\n2OpgFOHbAgMBAAECggEAGIh3hI238Y8fDkaNc5DWqNYGo0g7GA+OdZF4jkmCGUv6\n8o21HKYt2CwZgNT8XyR5N1id0ANdDef8tXgnP2MCO/pG1XTb01JN9QhWWxg81Wgt\n/t2Y7r8MbXIeg09WA+E4sh/0PGF/OY2g/auBpc27Yqu4ieiiXFrSxRnNeIbQmtRT\ntDnwEvfxu25vrLp2Uh9bATGN+DzkQVRSc23rZrt/XSARWQeglY7iZjy9ocHM4JAc\noM67C2cphcAq8IWAaO/tnuEbzOUQjzOpgQ16qHCoZ//eFjUwbnatkA1MPm/0+Lik\nMa2miAXrWtw8x/QTXfizAaxAG88Isj50y0hwvdK+0QKBgQDPkiZZojKW8ifasvju\nT1oJbdTALxrofLbwKl401u8LYlc68ILNsS6xPkMcvSWrbJVVw3BrUGkm+Dabojgl\nGzuAkTmSd7n4R7HKr08bBkPDc7eMgWUeN9YYok4904jPA9FEWoL/K/5j2iJ8atD/\n+jm5zdPE6bkBN9cq74QJ3JeDKwKBgQDDIxwt97/tp9ApQup2k9PTeJEkjmZ3U7Up\n+rDNAt/wSTgCDKGRgtbOancd3Rygbig8uzOTUsYVZP8WO4ATEN9yrmMq0RX7DS7f\n4jshmqcRXxP8HPT+wjR9nSN9ox7UVb4tpE5ciMrVA7N54yJi8HV8W5mYUtFy+arp\nKglniamEEQKBgQDPBEH/T0cJSIX7FlgyxS1VDhcLfW9mw0toh7jhFiPexLue6tRp\n9PZOi3w/o114dJkTqhHq1Y2p8g/0dHtudpSHi09SBtqRBmAJd4J7v2nB+xzqovqI\ngsOiWe2St/BQFsyVUXgoqmXSjHGsiJPdWGBOMTutvjRnRJvyFGMpurnZdQKBgDsV\n8n5ouhC382vK+zuUX1t08l3jUFtpWT2wzsAE0tHrGa5lLLbmqywtSIweW4CoWj6p\nYGCHe7sWrbaJpaogPch3zUc1sDYoM71OvyDZtySnaWG5UuWg4Ev4vLpaHgelPsSL\nL78NHH2LdVi+0baroKdbBRL+YLUzq/CV7esP3+hBAoGBALmZdN0fh+aYGRsEn4GB\nfSXIaO9jyF9YX+phxg2r8VSoTiXJJTyLC0npkw3Xukydlbr/kImB0j94Vw3ZP0uX\ndO2b5T8PuQjZXvmI0F8mGRxkADlWeMZ6fsVCW4rV+afDJLj8K4djdQuZSdmxBCWT\nUGuFhNf8l3KBjJPNl1slT1Nx\n-----END PRIVATE KEY-----\n",
+    "client_email": "hale-silicon-283105@appspot.gserviceaccount.com",
+    "client_id": "103970408906974943517",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/hale-silicon-283105%40appspot.gserviceaccount.com"
+  }
