@@ -4,8 +4,7 @@ import { getFirestore, getDocs, collectionGroup } from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-
-const TEST_CONFIG = require("../login.json");
+const TEST_CONFIG = require('../login.json');
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -19,7 +18,7 @@ const firebaseConfig = {
     authUri: TEST_CONFIG.auth_uri,
     tokenUri: TEST_CONFIG.token_uri,
     authProviderX509CertUrl: TEST_CONFIG.auth_provider_x509_cert_url,
-    clientX509CertUrl: TEST_CONFIG.client_x509_cert_url
+    clientX509CertUrl: TEST_CONFIG.client_x509_cert_url,
 };
 
 /* Original Database Configuration
@@ -43,10 +42,10 @@ testRead();
 
 async function testRead() {
     //read wildlife data from "WildlifeData" collection, not knowing all of the arbitrary document names
-    console.log("Reading from Firestore in WildlifeData");
-    const wildlifeCollection = collectionGroup(db, "WildlifeData");
+    console.log('Reading from Firestore in WildlifeData');
+    const wildlifeCollection = collectionGroup(db, 'WildlifeData');
     const wildlifeDocs = await getDocs(wildlifeCollection);
     wildlifeDocs.forEach((doc) => {
-        console.log(doc.id + ": " + JSON.stringify(doc.data()));
+        console.log(doc.id + ': ' + JSON.stringify(doc.data()));
     });
 }
