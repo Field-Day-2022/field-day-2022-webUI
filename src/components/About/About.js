@@ -1,9 +1,3 @@
-/*
- * File: About.js
- * Version: 1.01 US167
- * Date: 2020-03-01
- * Description: Allows users to view information about each aspect of the app.
- */
 import React, { useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -67,6 +61,12 @@ const styles = (theme) => ({
     descriptionPaper: {},
 });
 
+/**
+ * File: About.js
+ * @version 2022-11-16
+ * @description Allows users to view information about each aspect of the app.
+ * @returns About
+ */
 const About = (props) => {
     const [state, setState] = useState({ expanded: null });
     const { classes } = props;
