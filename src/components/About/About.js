@@ -4,7 +4,7 @@
  * Date: 2020-03-01
  * Description: Allows users to view information about each aspect of the app.
  */
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
