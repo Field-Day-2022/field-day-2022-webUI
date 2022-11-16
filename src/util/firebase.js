@@ -4,7 +4,7 @@ import { getFirestore, getDocs, collectionGroup } from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-const TEST_CONFIG = require("../login.json"); // TODO: revert to deployment database configuration before merge into main
+const TEST_CONFIG = require('../login.json'); // TODO: revert to deployment database configuration before merge into main
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -39,7 +39,7 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app); // export db
 
 // TODO: delete
-testRead(); 
+testRead();
 async function testRead() {
     //read wildlife data from "WildlifeData" collection, not knowing all of the arbitrary document names
     console.log('Reading from Firestore in WildlifeData');
