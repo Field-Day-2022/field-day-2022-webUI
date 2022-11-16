@@ -1,4 +1,3 @@
-
 import { initializeApp } from 'firebase/app';
 import { getFirestore, getDocs, collectionGroup } from 'firebase/firestore';
 // import { getAnalytics } from "firebase/analytics";
