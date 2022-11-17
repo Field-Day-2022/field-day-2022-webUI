@@ -62,15 +62,18 @@ const styles = (theme) => ({
 });
 
 /**
- * File: About.js
  * @version 2022-11-16
  * @description Allows users to view information about each aspect of the app.
- * @returns About
+ * @returns About component
  */
 const About = (props) => {
     const [state, setState] = useState({ expanded: null });
     const { classes } = props;
 
+    /**
+     * @description Handles changes to a specified panel. Sets expanded to true or false.
+     * @param {*} panel 
+     */
     const handleChange = (panel) => (event, expanded) => {
         setState({
             expanded: expanded ? panel : false,

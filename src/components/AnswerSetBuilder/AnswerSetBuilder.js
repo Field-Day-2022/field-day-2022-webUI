@@ -1,10 +1,4 @@
-/*
- * File: AnswerSetBuilder.js
- * Version: 1.01 US167
- * Date: 2020-03-01
- * Description: Builds user answer set response.
- */
-import React, { Component, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
@@ -25,51 +19,90 @@ const styles = (theme) => ({
     },
 });
 
-class AnswerSetBuilder extends Component {
-    state = {
+/**
+ * @version 2022-11-16
+ * @desctiption Builds user answer set response.
+ * @returns AnswerSetBuilder component
+ */
+const AnswerSetBuilder = (props) => {
+    const [state, setState] = useState({
         answerDialogOpen: false,
         bulkDialogOpen: false,
         selectedAnswerIndex: null,
+    })
+
+    const resetState = () => {
+        setState(
+            {
+                answerDialogOpen: false,
+                bulkDialogOpen: false,
+                selectedAnswerIndex: null,
+            }
+        );
     };
 
-    resetState = () => {
-        this.setState({
-            answerDialogOpen: false,
-            bulkDialogOpen: false,
-            selectedAnswerIndex: null,
-        });
+    const handleOpenAnswerDialog = () => {
+        setState(
+            {
+                answerDialogOpen: true,
+                bulkDialogOpen: state.bulkDialogOpen,
+                selectedAnswerIndex: state.selectedAnswerIndex,
+            }
+        );
     };
 
-    handleOpenAnswerDialog = () => {
-        this.setState({ answerDialogOpen: true });
+    const handleAnswerCancel = () => {
+        setState(
+            {
+                answerDialogOpen: false,
+                bulkDialogOpen: state.bulkDialogOpen,
+                selectedAnswerIndex: null
+            }
+        );
     };
 
-    handleAnswerCancel = () => {
-        this.setState({ answerDialogOpen: false, selectedAnswerIndex: null });
-    };
-
-    handleAnswerAdd = (input) => {
-        const { selectedAnswerIndex } = this.state;
-        const { answers, onAnswerAdd } = this.props;
+    const handleAnswerAdd = (input) => {
+        const { selectedAnswerIndex } = state;
+        const { answers, onAnswerAdd } = props;
         if (selectedAnswerIndex !== null) {
             answers[selectedAnswerIndex] = input;
         } else {
             answers.push(input);
         }
         onAnswerAdd(answers);
-        this.setState({ answerDialogOpen: false, selectedAnswerIndex: null });
+        setState(
+            {
+                answerDialogOpen: false,
+                bulkDialogOpen: state.bulkDialogOpen,
+                selectedAnswerIndex: null,
+            }
+        );
     };
 
-    handleAnswerClick = (index) => () => {
-        this.setState({ answerDialogOpen: true, selectedAnswerIndex: index });
+    const handleAnswerClick = (index) => () => {
+        setState(
+            {
+                answerDialogOpen: true,
+                bulkDialogOpen: state.bulkDialogOpen,
+                selectedAnswerIndex: index,
+            }
+        );
     };
 
-    handleBulkAnswerClick = () => {
-        this.setState({ bulkDialogOpen: true });
+    const handleBulkAnswerClick = () => {
+        setState({
+            answerDialogOpen: state.answerDialogOpen,
+            bulkDialogOpen: true,
+            selectedAnswerIndex: state.selectedAnswerIndex,
+        });
     };
 
-    handleBulkClose = () => {
-        this.setState({ bulkDialogOpen: false });
+    const handleBulkClose = () => {
+        setState({
+            answerDialogOpen: state.answerDialogOpen,
+            bulkDialogOpen: false,
+            selectedAnswerIndex: state.selectedAnswerIndex,
+        });
     };
 
     renderAnswerList = () => {
