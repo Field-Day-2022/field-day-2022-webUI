@@ -90,25 +90,29 @@ const AnswerSetBuilder = (props) => {
     };
 
     const handleBulkAnswerClick = () => {
-        setState({
-            answerDialogOpen: state.answerDialogOpen,
-            bulkDialogOpen: true,
-            selectedAnswerIndex: state.selectedAnswerIndex,
-        });
+        setState(
+            {
+                answerDialogOpen: state.answerDialogOpen,
+                bulkDialogOpen: true,
+                selectedAnswerIndex: state.selectedAnswerIndex,
+            }
+        );
     };
 
     const handleBulkClose = () => {
-        setState({
-            answerDialogOpen: state.answerDialogOpen,
-            bulkDialogOpen: false,
-            selectedAnswerIndex: state.selectedAnswerIndex,
-        });
+        setState(
+            {
+                answerDialogOpen: state.answerDialogOpen,
+                bulkDialogOpen: false,
+                selectedAnswerIndex: state.selectedAnswerIndex,
+            }
+        );
     };
 
     renderAnswerList = () => {
-        const { classes, answers } = this.props;
+        const { classes, answers } = props;
         return answers.length > 50 ? (
-            <ListItem button onClick={this.handleBulkAnswerClick}>
+            <ListItem button onClick={handleBulkAnswerClick}>
                 <ListItemText primary="Click to view full answer set" />
             </ListItem>
         ) : answers.length ? (
@@ -116,7 +120,7 @@ const AnswerSetBuilder = (props) => {
                 return (
                     <div key={index}>
                         {index > 0 ? <Divider /> : null}
-                        <ListItem button onClick={this.handleAnswerClick(index)}>
+                        <ListItem button onClick={handleAnswerClick(index)}>
                             <ListItemText primary={answer.primary} />
                         </ListItem>
                     </div>
@@ -130,8 +134,8 @@ const AnswerSetBuilder = (props) => {
     };
 
     render() {
-        const { answerDialogOpen, bulkDialogOpen, selectedAnswerIndex } = this.state;
-        const { classes, answers, globalSecondaryFields } = this.props;
+        const { answerDialogOpen, bulkDialogOpen, selectedAnswerIndex } = state;
+        const { classes, answers, globalSecondaryFields } = props;
         const selectedAnswer = selectedAnswerIndex !== null ? answers[selectedAnswerIndex] : null;
 
         return (
@@ -141,7 +145,7 @@ const AnswerSetBuilder = (props) => {
                         Answer
                     </Typography>
                     <Divider />
-                    <List>{this.renderAnswerList()}</List>
+                    <List>{renderAnswerList()}</List>
 
                     <div className={classes.buttonContainer}>
                         <Button
@@ -149,7 +153,7 @@ const AnswerSetBuilder = (props) => {
                             color="primary"
                             size="large"
                             className={classes.addButton}
-                            onClick={this.handleOpenAnswerDialog}
+                            onClick={handleOpenAnswerDialog}
                             fullWidth
                         >
                             Add Answer
@@ -158,14 +162,14 @@ const AnswerSetBuilder = (props) => {
                 </Paper>
                 <NewAnswerDialog
                     open={answerDialogOpen}
-                    handleCancel={this.handleAnswerCancel}
-                    handleAdd={this.handleAnswerAdd}
+                    handleCancel={handleAnswerCancel}
+                    handleAdd={handleAnswerAdd}
                     answer={selectedAnswer}
                     globalSecondaryFields={globalSecondaryFields}
                 />
                 <BulkAnswerDialog
                     open={bulkDialogOpen}
-                    onClose={this.handleBulkClose}
+                    onClose={handleBulkClose}
                     answers={answers}
                 />
             </Fragment>
