@@ -1,7 +1,7 @@
 /*
  * File: fieldSchemas-esm.js
- * Version: 1.01
- * Date: 2020-03-07
+ * Version: 1.02
+ * Date: 2022-11-16
  * Description: Sets references for different inputs and options on the webpage.
  */
 
@@ -72,15 +72,15 @@ export const REGEX = {
     },
     POS_NUM: {
         title: 'Positive Number',
-        regex: '^[0-9]*(\\.|)[0-9]*$',
+        regex: '^[0-9]*\\.?[0-9]*$',
     },
     NEG_NUM: {
         title: 'Negative Number',
-        regex: '^-[0-9]*(\\.|)[0-9]*|0$',
+        regex: '^-[0-9]*\\.?[0-9]*|0$',
     },
     EMAIL: {
         title: 'Email',
-        regex: '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$',
+        regex: '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$',
     },
     PHONE: {
         title: 'Phone Number',
