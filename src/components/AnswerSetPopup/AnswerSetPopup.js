@@ -140,17 +140,15 @@ class AnswerSetPopup extends Component {
         return null;
     };
 
-    handleSecondaryOpen = () => {
-        this.setState({ secondaryOpen: true });
-    };
+    handleSecondary = open => this.setState({ secondaryOpen: open });
+
+    handleSecondaryOpen = () => this.handleSecondary(true);
 
     handleSecondaryClose = () => {
         this.setState({ secondaryOpen: false, newField: '' });
     };
 
-    handleSecondaryCancel = () => {
-        this.setState({ secondaryOpen: false });
-    };
+    handleSecondaryCancel = () => this.handleSecondary(false);
 
     handleSecClick = (index) => {
         this.setState({ deleteDialog: true, deleteIndex: index });
