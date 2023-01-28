@@ -196,10 +196,7 @@ class AnswerSetPopup extends Component {
         const { deleteIndex, secondary_keys } = this.state;
         const newSecFields = secondary_keys;
         this.setState({
-            secondary_keys: [
-                ...newSecFields.slice(0, deleteIndex),
-                ...newSecFields.slice(deleteIndex + 1),
-            ],
+            secondary_keys: newSecFields.filter((_,n) => n != deleteIndex),
             deleteIndex: null,
             deleteDialog: false,
         });
