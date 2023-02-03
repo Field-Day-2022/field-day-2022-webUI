@@ -116,13 +116,13 @@ class CreateDataEntryViewPage extends Component {
                     <h3 className={classes.detailHeader}>Loading session data, please wait...</h3>
                 )}
 
-                {this.state.selectedSession !== undefined && (
+                {this.state.selectedSession && (
                     <SessionDetailCard
                         title="Session Selected"
                         row={this.getSessionInfoToDisplay(this.state.selectedSession)}
                     />
                 )}
-                {this.state.entries !== undefined && (
+                {this.state.entries && (
                     <NewDataEntryForm
                         entries={this.state.entries}
                         sessionId={this.state.selectedSession.session_id}
