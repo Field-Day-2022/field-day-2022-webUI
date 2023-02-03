@@ -17,7 +17,7 @@ import { Paper } from '@material-ui/core';
 const styles = {
     container: {
         marginBottom: 20,
-        padding: `10px 20px`,
+        padding: '10px 20px',
     },
     detailHeader: {
         marginTop: 10,
@@ -71,13 +71,10 @@ class CreateSessionViewPage extends Component {
                 new Date(newSessionData['Session ID'] * 1000)
             ).format('YYYY/MM/DD HH:mm');
             for (const [key, value] of Object.entries(newSessionData)) {
-                if (value === null) {
+                if (value === null)
                     newSessionData[key] = 'N/A';
-                } else if (value === false) {
-                    newSessionData[key] = 'false';
-                } else if (value === true) {
-                    newSessionData[key] = 'true';
-                }
+                else if (typeof(value) == "boolean")
+                    newSessionData[key] = JSON.stringify(value);
             }
         }
         return (

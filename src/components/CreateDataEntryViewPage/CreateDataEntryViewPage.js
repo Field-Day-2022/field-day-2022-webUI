@@ -17,7 +17,7 @@ import NewDataEntryForm from '../NewDataEntryForm/NewDataEntryForm';
 const styles = {
     container: {
         marginBottom: 20,
-        padding: `10px 20px`,
+        padding: '10px 20px',
     },
     detailHeader: {
         marginTop: 10,
