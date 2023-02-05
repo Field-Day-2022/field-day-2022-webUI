@@ -140,7 +140,7 @@ class AnswerSetPopup extends Component {
         return null;
     };
 
-    handleSecondary = open => this.setState({ secondaryOpen: open });
+    handleSecondary = (open) => this.setState({ secondaryOpen: open });
 
     handleSecondaryOpen = () => this.handleSecondary(true);
 
@@ -196,7 +196,7 @@ class AnswerSetPopup extends Component {
         const { deleteIndex, secondary_keys } = this.state;
         const newSecFields = secondary_keys;
         this.setState({
-            secondary_keys: newSecFields.filter((_,n) => n != deleteIndex),
+            secondary_keys: newSecFields.filter((_, n) => n != deleteIndex),
             deleteIndex: null,
             deleteDialog: false,
         });

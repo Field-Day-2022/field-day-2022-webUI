@@ -64,7 +64,7 @@ class AnswerSetBuilder extends Component {
         this.setState({ answerDialogOpen: true, selectedAnswerIndex: index });
     };
 
-    handleBulkAnswer = open => this.setState({ bulkDialogOpen: open });
+    handleBulkAnswer = (open) => this.setState({ bulkDialogOpen: open });
 
     handleBulkAnswerClick = () => this.handleBulkAnswer(true);
 
