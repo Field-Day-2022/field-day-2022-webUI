@@ -71,10 +71,8 @@ class CreateSessionViewPage extends Component {
                 new Date(newSessionData['Session ID'] * 1000)
             ).format('YYYY/MM/DD HH:mm');
             for (const [key, value] of Object.entries(newSessionData)) {
-                if (value === null)
-                    newSessionData[key] = 'N/A';
-                else if (typeof(value) == "boolean")
-                    newSessionData[key] = JSON.stringify(value);
+                if (value === null) newSessionData[key] = 'N/A';
+                else if (typeof value == 'boolean') newSessionData[key] = JSON.stringify(value);
             }
         }
         return (

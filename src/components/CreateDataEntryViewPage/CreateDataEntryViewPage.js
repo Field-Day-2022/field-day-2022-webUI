@@ -94,10 +94,8 @@ class CreateDataEntryViewPage extends Component {
             'YYYY/MM/DD HH:mm'
         );
         for (const [key, value] of Object.entries(newSessionData)) {
-            if (value === null)
-                newSessionData[key] = 'N/A';
-            else if (typeof(value) == "boolean")
-                newSessionData[key] = JSON.stringify(value);
+            if (value === null) newSessionData[key] = 'N/A';
+            else if (typeof value == 'boolean') newSessionData[key] = JSON.stringify(value);
         }
 
         return newSessionData;
