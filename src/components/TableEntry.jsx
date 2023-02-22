@@ -102,7 +102,6 @@ export const TableEntry = forwardRef((props, ref) => {
             layout
             ref={ref}
         >
-            {/* <AnimatePresence> */}
             <Actions
                 onEditClickedHandler={onEditClickedHandler}
                 onCancelClickedHandler={onCancelClickedHandler}
@@ -255,7 +254,7 @@ const Actions = ({
                     </svg>
                     </>
                 }
-                {currentState === 'editing' || currentState === 'deleting' && 
+                {(currentState === 'editing' || currentState === 'deleting') && 
                 <>
                     <svg
                         key='check'
