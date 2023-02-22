@@ -8,6 +8,7 @@ import React from 'react';
 import { Authenticator } from './utils/authenticator';
 import { Notifier } from './components/Notifier';
 import { getTable } from './utils/TableDbMappings';
+import { FormBuilder } from './pages/FormBuilder';
 
 function App() {
     const [currentPage, setCurrentPage] = useAtom(currentPageName);
@@ -38,6 +39,7 @@ function App() {
                             getTable(currentPage, currentProject, environment)}
                         {currentPage === 'Session' &&
                             getTable(currentPage, currentProject, environment)}
+                        {currentPage === 'FormBuilder' && <FormBuilder />}
                     </>
                 ) : (
                     <LoginPage auth={auth} />
