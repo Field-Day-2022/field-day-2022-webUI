@@ -12,6 +12,7 @@ import { useAtom } from 'jotai';
 import { currentProjectName } from '../utils/jotai';
 import Dropdown from '../components/Dropdown';
 import { notify, Type } from '../components/Notifier';
+import { ProjectSelector } from '../components/ProjectSelector';
 
 export default function TablePage({ tableName, collectionName }) {
     const [entries, setEntries] = useState([]);
@@ -161,16 +162,7 @@ export default function TablePage({ tableName, collectionName }) {
         <PageWrapper>
             <div className='flex justify-between items-center overflow-auto'>
                 <TabBar />
-                <div className='flex items-center px-5 space-x-5'>
-                    <div>Project: </div>
-                    <Dropdown
-                        onClickHandler={(selectedOption) => {
-                            if (selectedOption !== currentProject)
-                                setCurrentProject(selectedOption.replace(/\s/g, ''));
-                        }}
-                        options={['Gateway', 'Virgin River', 'San Pedro']}
-                    />
-                </div>
+                <ProjectSelector />
 
             </div>
 
