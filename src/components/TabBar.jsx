@@ -1,7 +1,7 @@
 import { GiTurtle, GiFrog, GiSpottedBug, GiSandSnake, GiSquirrel } from 'react-icons/gi';
 import { FaClipboard } from 'react-icons/fa'
 import Logo from './Logo';
-
+import Dropdown from './Dropdown';
 import { useAtom } from 'jotai';
 import { currentPageName } from '../utils/jotai';
 
@@ -27,6 +27,7 @@ export default function TabBar() {
             <Tab key='Arthropod' active={currentPage === 'Arthropod'} text='Arthropod' icon={<GiSpottedBug />} onClick={() => setCurrentPage('Arthropod')} />
             <Tab key='Amphibian' active={currentPage === 'Amphibian'} text='Amphibian' icon={<GiFrog />} onClick={() => setCurrentPage('Amphibian')} />
             <Tab key='Session' active={currentPage === 'Session'} text='Session' icon={<FaClipboard />} onClick={() => setCurrentPage('Session')} />
+            <Tab key='FormBuilder' active={currentPage === 'FormBuilder'} text='Form Builder' icon={<FaClipboard />} onClick={() => setCurrentPage('FormBuilder')} />
         </div>
     );
 }
