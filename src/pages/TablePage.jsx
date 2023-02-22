@@ -160,12 +160,6 @@ export default function TablePage({ tableName, collectionName }) {
 
     return (
         <PageWrapper>
-            <div className='flex justify-between items-center overflow-auto'>
-                <TabBar />
-                <ProjectSelector />
-
-            </div>
-
             <div>
                 <DataTable name={tableName} labels={labels} entries={entries} setEntries={setEntries} />
                 <Pagination
