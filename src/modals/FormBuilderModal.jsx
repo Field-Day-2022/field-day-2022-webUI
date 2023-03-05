@@ -8,7 +8,7 @@ export default function FormBuilderModal({ showModal, onCancel, onOkay }) {
             onCancel={onCancel}
             onOkay={onOkay}
             title='Form Builder'
-            text='Build custom forms with Field Day!'
+            text='View, create, and modify forms for data collection. Data Forms describe individual observations of a single entity type. Session Forms describe a collection of data entries across multiple different Data Forms.'
         >
             <div className="w-full-modal-width">
                 <FormBuilder />

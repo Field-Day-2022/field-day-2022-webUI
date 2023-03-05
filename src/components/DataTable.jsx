@@ -32,7 +32,9 @@ export default function DataTable({ name, labels, entries, setEntries }) {
         return (
             <div className="flex-col px-5 space-x-5 items-center">
                 <div className='hover:scale-125 transition h-8 cursor-pointer' onClick={() => setShowColumnSelector(!showColumnSelector)}>
-                    <ColumnToggleIcon className="text-2xl" />
+                    <div className={(showColumnSelector) ? 'text-asu-maroon' : ''}>
+                        <ColumnToggleIcon className="text-2xl" />
+                    </div>
                 </div>
                 <ColumnSelector show={showColumnSelector} />
             </div>
@@ -83,7 +85,7 @@ export default function DataTable({ name, labels, entries, setEntries }) {
                         animate={{ opacity: 1, y: '0%', x: '-100%' }}
                         exit={{ opacity: 0, y: '-100%', x: '-100%' }}
                     >
-                        <div className='flex-col space-y-3 whitespace-nowrap max-h-[calc(100vh-14em)]'>
+                        <div className='flex-col space-y-3 whitespace-nowrap max-h-[calc(100vh-15em)]'>
                             <h1 className='text-xl'>Column Selector</h1>
                             {labels && labels.map((label) =>
                                 <div key={label} className='flex p-2 space-x-5 hover:bg-neutral-100 text-base'>
