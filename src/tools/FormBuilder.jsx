@@ -1,6 +1,6 @@
 import PageWrapper from '../pages/PageWrapper';
 import { useState, useEffect } from 'react';
-import { collection, getDocs, setDoc, doc, getDoc, addDoc, where } from 'firebase/firestore';
+import { collection, getDocs, setDoc, doc, getDoc, addDoc, where, query } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import { notify, Type } from '../components/Notifier';
 import { LayoutGroup, motion } from 'framer-motion';
@@ -15,6 +15,35 @@ export default function FormBuilder() {
     const [activeDocumentDataPrimary, setActiveDocumentDataPrimary] = useState(); // currently selected primary key
     const [formData, setFormData] = useState(); // form data
     const [changeBoxTitle, setChangeBoxTitle] = useState('Edit Data');
+
+    useEffect(() => {
+        const changeAnswerSetData = async () => {
+            const querySnapshot = await getDocs(
+                query(
+                    collection(db, "AnswerSet"),
+                    where("set_name", "==", "arthropodSpeciesList")
+                ));
+            const arthropodAnswerSetDoc = querySnapshot.docs[0];
+            let answers = []
+            for (const species of arthropodAnswerSetDoc.data().arthropodSpeciesArray) {
+                answers.push({
+                    primary: species.toUpperCase()
+                })
+            }
+            const date_modified = new Date().getTime();
+            const newArthropodAnswerSetObj = {
+                set_name: "ArthropodSpecies",
+                answers,
+                date_modified,
+                secondary_keys: ""
+            }
+            await setDoc(
+                doc(db, "AnswerSet", arthropodAnswerSetDoc.id),
+                newArthropodAnswerSetObj
+            )
+        }
+        changeAnswerSetData();
+    }, [])
 
     useEffect(() => {
         const getAllDocs = async () => {
