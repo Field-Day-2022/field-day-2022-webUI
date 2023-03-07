@@ -12,48 +12,59 @@ export default function FormBuilder() {
     const [activeDocumentIndex, setActiveDocumentIndex] = useState(-1); // index of current document out of all documents for easy access
     const [documentDataPrimaries, setDocumentDataPrimaries] = useState([]); // array of all primary keys for each document
     const [activeDocumentDataPrimary, setActiveDocumentDataPrimary] = useState(); // currently selected primary key
-    const [formData, setFormData] = useState(); // form data
+    const [formData, setFormData] = useState(''); // form data
     const [changeBoxTitle, setChangeBoxTitle] = useState('Edit Data');
 
     useEffect(() => {
-        const getAllDocs = async () => {
-            const querySnapshot = await getDocs(collection(db, activeCollection));
-            let tempDocArray = [];
-            let tempDocSnapshotArray = [];
-            querySnapshot.forEach((doc) => {
-                tempDocArray.push(doc.data());
-                tempDocSnapshotArray.push(doc);
-            });
-            setDocuments(tempDocArray);
-            setDocumentSnapshots(tempDocSnapshotArray);
-        };
-        if (activeCollection) getAllDocs();
-        else {
-            setDocuments([]);
-            setDocumentDataPrimaries([]);
+        resetCollectionData();
+        if (activeCollection) populateDocuments();
+    }, [activeCollection]);
+
+    useEffect(() => {
+        resetActiveDocumentData();
+        if (activeDocument) populateDataPrimaryArray();
+    }, [activeDocument]);
+
+    const populateDocuments = async () => {
+        const querySnapshot = await getDocs(collection(db, activeCollection));
+        let tempDocArray = [];
+        let tempDocSnapshotArray = [];
+        querySnapshot.forEach((doc) => {
+            tempDocArray.push(doc.data());
+            tempDocSnapshotArray.push(doc);
+        });
+        setDocuments(tempDocArray);
+        setDocumentSnapshots(tempDocSnapshotArray);
+    };
+
+    const populateDataPrimaryArray = () => {
+        let tempDataArray = [];
+        if (activeDocument.answers) {
+            for (const answer of activeDocument.answers) {
+                tempDataArray.push(answer.primary);
+            }
         }
+        setDocumentDataPrimaries(tempDataArray);
+    };
+
+    const resetCollectionData = () => {
+        resetChangeBoxTitle();
         setActiveDocument('');
         setActiveDocumentDataPrimary('');
         setFormData('');
         setActiveDocumentIndex(-1);
-    }, [activeCollection]);
+        setDocuments([]);
+        setDocumentDataPrimaries([]);
+    };
 
-    useEffect(() => {
-        if (activeDocument) {
-            let tempDataArray = [];
-            if (activeDocument.answers) {
-                for (const answer of activeDocument.answers) {
-                    tempDataArray.push(answer.primary);
-                }
-            }
-            setDocumentDataPrimaries(tempDataArray);
-        } else {
-            setDocumentDataPrimaries([]);
-        }
+    const resetActiveDocumentData = () => {
+        resetChangeBoxTitle();
         setActiveDocumentDataPrimary('');
         setFormData('');
-        setChangeBoxTitle('Edit Data')
-    }, [activeDocument]);
+        setDocumentDataPrimaries([]);
+    };
+
+    const resetChangeBoxTitle = () => setChangeBoxTitle('Edit Data');
 
     const pushChangesToFirestore = async () => {
         await setDoc(
@@ -62,7 +73,7 @@ export default function FormBuilder() {
         )
             .then(() => {
                 notify(Type.success, 'Changes successfully written to database!');
-                setChangeBoxTitle('Edit Data')
+                setChangeBoxTitle('Edit Data');
             })
             .catch((e) => {
                 notify(Type.error, `Error writing to database: ${e}`);
@@ -77,16 +88,15 @@ export default function FormBuilder() {
                 date_modified: d.getTime(),
             })
                 .then((doc) => {
-                    notify(Type.success, 'New document successfully written to database!')
+                    notify(Type.success, 'New document successfully written to database!');
                     setChangeBoxTitle('Edit Data');
-                    console.log(doc);
-                    setDocumentSnapshots([...documentSnapshots, doc])
+                    setDocumentSnapshots([...documentSnapshots, doc]);
                 })
                 .catch((e) => {
                     notify(Type.error, `Error writing to database: ${e}`);
                 });
         }
-    }
+    };
 
     const updateUI = () => {
         let tempDataPrimaries = documentDataPrimaries;
@@ -110,77 +120,9 @@ export default function FormBuilder() {
             setDocumentDataPrimaries([...documentDataPrimaries, formData.primary]);
             pushChangesToFirestore();
         } else if (changeBoxTitle === 'Add New Document') {
-            setDocuments([...documents, formData])
+            setDocuments([...documents, formData]);
             addDocToFirestore();
         }
-    };
-
-    const renderDataForm = () => {
-        let output = [];
-        if (activeCollection === 'AnswerSet') {
-            output.push(
-                <div key={'primaryForm'}>
-                    <label key="primaryLabel" htmlFor="primary" className="text-xl">
-                        Primary:{' '}
-                    </label>
-
-                    <input
-                        key="primaryInput"
-                        id="primary"
-                        type="text"
-                        className="border-gray-800 border-2 m-2 rounded text-xl p-1"
-                        value={formData.primary}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                primary: e.target.value,
-                            })
-                        }
-                    />
-                </div>
-            );
-            if (formData.secondary) {
-                for (const key in formData.secondary) {
-                    output.push(
-                        <div key={`${key}form`}>
-                            <label key={`${key}label`} htmlFor={`${key}input`} className="text-xl">
-                                {`${key}: `}
-                            </label>
-                            <input
-                                key={`${key}input`}
-                                id={`${key}input`}
-                                type="text"
-                                className="border-gray-800 border-2 m-2 rounded text-xl p-1"
-                                value={formData.secondary[key]}
-                                onChange={(e) =>
-                                    setFormData({
-                                        ...formData,
-                                        secondary: {
-                                            ...formData.secondary,
-                                            [key]: e.target.value,
-                                        },
-                                    })
-                                }
-                            />
-                        </div>
-                    );
-                }
-            }
-        }
-        return (
-            <form className="flex flex-col items-center">
-                {output}
-                <button
-                    onClick={(e) => {
-                        e.preventDefault();
-                        submitChanges();
-                    }}
-                    className="border-gray-800 border-2 m-2 rounded text-xl py-1 px-4 w-min cursor-pointer hover:bg-blue-400 active:bg-blue-500"
-                >
-                    Submit
-                </button>
-            </form>
-        );
     };
 
     const addNewData = () => {
@@ -191,10 +133,10 @@ export default function FormBuilder() {
             formTemplate.primary = '';
             let keyArray = [];
             if (activeDocument.secondary_keys) {
-                formTemplate.secondary = {}
+                formTemplate.secondary = {};
                 for (let i = 0; i < activeDocument.secondary_keys.length; i++) {
                     formTemplate.secondary[activeDocument.secondary_keys[i]] = '';
-                    keyArray.push(activeDocument.secondary_keys[i])
+                    keyArray.push(activeDocument.secondary_keys[i]);
                 }
             }
         }
@@ -202,11 +144,22 @@ export default function FormBuilder() {
     };
 
     const addNewDocument = () => {
-        setChangeBoxTitle('Add New Document')
+        setChangeBoxTitle('Add New Document');
         if (activeCollection === 'AnswerSet') {
-            setFormData({ set_name: '', secondary_keys: [], answers: [] })
+            setFormData({ set_name: '', secondary_keys: [], answers: [] });
         }
-    }
+    };
+
+    const displayNewDataForm = () => {
+        return (
+            (activeDocumentDataPrimary || changeBoxTitle === 'Add New Data') &&
+            changeBoxTitle !== 'Add New Document'
+        );
+    };
+
+    const displayNewDocumentForm = () => {
+        return changeBoxTitle === 'Add New Document';
+    };
 
     return (
         <div className="flex flex-col items-start p-2 text-center">
@@ -225,11 +178,7 @@ export default function FormBuilder() {
                 <div className="border-gray-800 border-2 h-[calc(100vh-21em)] rounded">
                     <div className="flex justify-around items-center">
                         <h2 className="text-2xl">Document</h2>
-                        {activeCollection && (
-                            <AddNewButton
-                                clickHandler={() => addNewDocument()}
-                            />
-                        )}
+                        {activeCollection && <AddNewButton clickHandler={() => addNewDocument()} />}
                     </div>
                     <ReusableUnorderedList
                         listItemArray={documents}
@@ -247,9 +196,7 @@ export default function FormBuilder() {
                     <div className="border-gray-800 border-b-2 flex flex-col">
                         <div className="flex justify-around items-center">
                             <h2 className="text-2xl">Data</h2>
-                            {activeDocument && (
-                                <AddNewButton clickHandler={() => addNewData()} />
-                            )}
+                            {activeDocument && <AddNewButton clickHandler={() => addNewData()} />}
                         </div>
                         <ReusableUnorderedList
                             listItemArray={documentDataPrimaries}
@@ -260,7 +207,7 @@ export default function FormBuilder() {
                                 } else {
                                     setActiveDocumentDataPrimary(listItem);
                                     setFormData(activeDocument.answers[index]);
-                                    setChangeBoxTitle('Edit Data');
+                                    resetChangeBoxTitle();
                                 }
                             }}
                             selectedItem={activeDocumentDataPrimary}
@@ -268,16 +215,22 @@ export default function FormBuilder() {
                     </div>
                     <div>
                         <h2 className="text-2xl">{changeBoxTitle}</h2>
-                        {(activeDocumentDataPrimary || changeBoxTitle === 'Add New Data') &&
-                            renderDataForm()}
-                        {changeBoxTitle === 'Add New Document' &&
+                        {displayNewDataForm() && (
+                            <NewDataForm
+                                formData={formData}
+                                setFormData={setFormData}
+                                activeCollection={activeCollection}
+                                submitChanges={submitChanges}
+                            />
+                        )}
+                        {displayNewDocumentForm() && (
                             <NewDocumentForm
                                 formData={formData}
                                 setFormData={setFormData}
                                 activeCollection={activeCollection}
                                 submitChanges={submitChanges}
                             />
-                        }
+                        )}
                     </div>
                 </div>
             </div>
@@ -286,6 +239,14 @@ export default function FormBuilder() {
 }
 
 const ReusableUnorderedList = ({ listItemArray, clickHandler, selectedItem }) => {
+    if (!listItemArray.length) {
+        return (
+            <div className="h-[calc(100%-4em)] flex items-center justify-center">
+                <p>No data to display!</p>
+            </div>
+        );
+    }
+
     return (
         <ul className="h-[calc(100%-4em)] overflow-y-auto">
             {listItemArray.map((listItem, index) => (
@@ -331,59 +292,134 @@ const AddNewButton = ({ clickHandler }) => {
     );
 };
 
-const NewDocumentForm = ({
-    formData,
-    setFormData,
-    activeCollection,
-    submitChanges,
-}) => {
-
+const NewDataForm = ({ activeCollection, formData, setFormData, submitChanges }) => {
+    let output = [];
     if (activeCollection === 'AnswerSet') {
-        return (
-            <form className='flex flex-col items-center h-[calc(100%-2em)] overflow-y-auto'>
-                <div>
-                    <label htmlFor='setName' className='text-xl'>Answer Set Name:</label>
-                    <input
-                        id='setName'
-                        type='text'
-                        className='border-gray-800 border-2 m-2 rounded text-xl p-1'
-                        value={formData.set_name}
-                        onChange={e => setFormData({ ...formData, set_name: e.target.value })}
-                    />
-                </div>
-                {formData.secondary_keys.map((secondaryKey, index) => (
-                    <div key={index} className='text-xl'>
-                        <label>{`Secondary Key ${index + 1}: `}</label>
+        output.push(
+            <div key={'primaryForm'}>
+                <label key="primaryLabel" htmlFor="primary" className="text-xl">
+                    Primary:{' '}
+                </label>
+
+                <input
+                    key="primaryInput"
+                    id="primary"
+                    type="text"
+                    className="border-gray-800 border-2 m-2 rounded text-xl p-1"
+                    value={formData.primary}
+                    onChange={(e) =>
+                        setFormData({
+                            ...formData,
+                            primary: e.target.value,
+                        })
+                    }
+                />
+            </div>
+        );
+        if (formData.secondary) {
+            for (const key in formData.secondary) {
+                output.push(
+                    <div key={`${key}form`}>
+                        <label key={`${key}label`} htmlFor={`${key}input`} className="text-xl">
+                            {`${key}: `}
+                        </label>
                         <input
-                            type='text'
-                            className='border-gray-800 border-2 m-2 rounded p-1'
-                            value={secondaryKey}
-                            onChange={e => {
-                                const newKeys = formData.secondary_keys.map((key, i) => {
-                                    return i === index ? e.target.value : key;
+                            key={`${key}input`}
+                            id={`${key}input`}
+                            type="text"
+                            className="border-gray-800 border-2 m-2 rounded text-xl p-1"
+                            value={formData.secondary[key]}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    secondary: {
+                                        ...formData.secondary,
+                                        [key]: e.target.value,
+                                    },
                                 })
-                                setFormData({ ...formData, secondary_keys: newKeys })
-                            }}
+                            }
                         />
                     </div>
-                ))}
+                );
+            }
+        }
+    }
+    return (
+        <form className="flex flex-col items-center">
+            {output}
+            <button
+                onClick={(e) => {
+                    e.preventDefault();
+                    submitChanges();
+                }}
+                className="border-gray-800 border-2 m-2 rounded text-xl py-1 px-4 w-min cursor-pointer hover:bg-blue-400 active:bg-blue-500"
+            >
+                Submit
+            </button>
+        </form>
+    );
+};
+
+const NewDocumentForm = ({ formData, setFormData, activeCollection, submitChanges }) => {
+    if (activeCollection === 'AnswerSet') {
+        return (
+            <form className="flex flex-col items-center h-[calc(100%-2em)] overflow-y-auto">
+                <div>
+                    <label htmlFor="setName" className="text-xl">
+                        Answer Set Name:
+                    </label>
+                    <input
+                        id="setName"
+                        type="text"
+                        className="border-gray-800 border-2 m-2 rounded text-xl p-1"
+                        value={formData.set_name}
+                        onChange={(e) => setFormData({ ...formData, set_name: e.target.value })}
+                    />
+                </div>
+                {formData &&
+                    formData.secondary_keys.map((secondaryKey, index) => (
+                        <div key={index} className="text-xl">
+                            <label>{`Secondary Key ${index + 1}: `}</label>
+                            <input
+                                type="text"
+                                className="border-gray-800 border-2 m-2 rounded p-1"
+                                value={secondaryKey}
+                                onChange={(e) => {
+                                    const newKeys = formData.secondary_keys.map((key, i) => {
+                                        return i === index ? e.target.value : key;
+                                    });
+                                    setFormData({ ...formData, secondary_keys: newKeys });
+                                }}
+                            />
+                        </div>
+                    ))}
                 <button
                     className="border-gray-800 border-2 m-2 rounded text-xl py-1 px-4 w-max cursor-pointer hover:bg-blue-400 active:bg-blue-500"
-                    onClick={e => {
+                    onClick={(e) => {
                         e.preventDefault();
                         let tempKeysArray = [...formData.secondary_keys];
-                        tempKeysArray.push('')
-                        setFormData({ ...formData, secondary_keys: tempKeysArray })
+                        tempKeysArray.push('');
+                        setFormData({ ...formData, secondary_keys: tempKeysArray });
                     }}
-                >Add Secondary Key</button>
+                >
+                    Add Secondary Key
+                </button>
                 <button
-                    onClick={e => {
+                    onClick={(e) => {
                         e.preventDefault();
                         submitChanges();
                     }}
                     className="border-gray-800 border-2 m-2 rounded text-xl py-1 px-4 w-min cursor-pointer hover:bg-blue-400 active:bg-blue-500"
-                >Submit</button>
+                >
+                    Submit
+                </button>
             </form>
-        )
+        );
+    } else {
+        return (
+            <div className="h-[calc(100%-2em)] flex items-center justify-center">
+                <p>Not yet implemented!</p>
+            </div>
+        );
     }
-}
+};
