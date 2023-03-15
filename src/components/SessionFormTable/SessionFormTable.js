@@ -16,6 +16,7 @@ import { AuthContext } from '../AuthContext/AuthContext';
 import SessionDetailPopup from '../SessionDetailPopup/SessionDetailPopup';
 import { DeleteSessionDialog } from '../DeleteSessionDialog/DeleteSessionDialog';
 import APIService from '../APIService/APIService';
+import { strToNullableBool } from '../../util/data/Util.js'
 
 const styles = (theme) => ({
     root: {
@@ -57,9 +58,7 @@ class SessionFormTable extends React.Component {
             answers.forEach((f, i) => {
                 const key = Object.keys(f)[0];
                 let value = newData[key];
-                if (value === 'true') value = true;
-                if (value === 'false') value = false;
-                if (value === 'N/A') value = null;
+                value = strToNullableBool(value) === undefined ? value : strToNullableBool(value);
                 answers[i] = { [key]: value };
             });
 

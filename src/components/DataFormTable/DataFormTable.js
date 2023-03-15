@@ -13,6 +13,7 @@ import APIService from '../APIService/APIService';
 
 import { AuthContext } from '../AuthContext/AuthContext';
 import { APIContext } from '../APIContext/APIContext';
+import { strToNullableBool } from '../../util/data/Util.js'
 
 const styles = (theme) => ({
     root: {
@@ -40,9 +41,7 @@ class DataFormTable extends React.Component {
                 const key = Object.keys(f)[0];
 
                 let value = newData[key];
-                if (value === 'true') value = true;
-                if (value === 'false') value = false;
-                if (value === 'N/A') value = null;
+                value = strToNullableBool(value) === undefined ? value : strToNullableBool(value);
                 answers[i] = { [key]: value };
             });
 
