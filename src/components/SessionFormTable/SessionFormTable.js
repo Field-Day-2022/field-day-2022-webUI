@@ -16,7 +16,7 @@ import { AuthContext } from '../AuthContext/AuthContext';
 import SessionDetailPopup from '../SessionDetailPopup/SessionDetailPopup';
 import { DeleteSessionDialog } from '../DeleteSessionDialog/DeleteSessionDialog';
 import APIService from '../APIService/APIService';
-import { strToNullableBool } from '../../util/data/Util.js'
+import { strToNullableBool, utcDate, utcNow } from '../../util/data/Util.js'
 
 const styles = (theme) => ({
     root: {
@@ -64,8 +64,8 @@ class SessionFormTable extends React.Component {
 
             const sessionCopy = newData.session;
             sessionCopy.session_json = answers;
-            sessionCopy.date_created = Math.round(Date.parse(newData['Date/Time']) / 1000);
-            sessionCopy.date_modified = Math.round(Date.now() / 1000);
+            sessionCopy.date_created = utcDate(Date.parse(newData['Date/Time']));
+            sessionCopy.date_modified = utcNow();
 
             try {
                 await putSession(sessionCopy);
