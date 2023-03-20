@@ -26,6 +26,7 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import CSVImport from '../CSVImport/CSVImport';
+import { utcDate, utcNow } from '../../util/data/Util.js'
 
 const styles = (theme) => ({
     appBar: {
@@ -112,14 +113,14 @@ class AnswerSetPopup extends Component {
                 set_name,
                 secondary_keys: JSON.stringify(secondary_keys),
                 answers: JSON.stringify(answers),
-                id: id || Math.round(Date.now() / 1000),
+                id: id || utcNow(),
             })
         );
         const errors = this.getInputErrors(newSet);
         if (errors) {
             this.setState({ errors });
         } else {
-            newSet.date_modified = Math.round(Date.now() / 1000);
+            newSet.date_modified = utcNow();
             this.props.onClose(newSet);
             this.resetState();
         }

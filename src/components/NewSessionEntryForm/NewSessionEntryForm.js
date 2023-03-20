@@ -15,6 +15,7 @@ import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { utcDate, utcNow } from '../../util/data/Util.js'
 
 import moment from 'moment';
 
@@ -109,7 +110,7 @@ export default withStyles(styles)(
             const time = this.state.sessionTime;
 
             const parsedDate = moment(date + ' ' + time, 'MM/DD/YYYY HH:mm:ss');
-            const sessionId = Math.round(parsedDate.valueOf() / 1000);
+            const sessionId = utcDate(parsedDate.valueOf());
 
             if (isNaN(sessionId)) {
                 this.setState({
@@ -122,8 +123,8 @@ export default withStyles(styles)(
                 const newSession = {
                     project_id: this.state.projectId,
                     form_id: this.state.selectedForm,
-                    date_modified: Math.round(Date.now() / 1000),
-                    date_created: Math.round(Date.now() / 1000),
+                    date_modified: utcNow(),
+                    date_created: utcNow(),
                     session_id: sessionId,
                 };
 
