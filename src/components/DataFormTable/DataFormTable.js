@@ -13,7 +13,7 @@ import APIService from '../APIService/APIService';
 
 import { AuthContext } from '../AuthContext/AuthContext';
 import { APIContext } from '../APIContext/APIContext';
-import { strToNullableBool } from '../../util/data/Util.js'
+import { strToNullableBool, utcDate, utcNow } from '../../util/data/Util.js'
 
 const styles = (theme) => ({
     root: {
@@ -46,7 +46,7 @@ class DataFormTable extends React.Component {
             });
 
             const entryCopy = JSON.parse(JSON.stringify(newData.entry));
-            entryCopy.date_modified = Math.round(Date.now() / 1000);
+            entryCopy.date_modified = utcNow();
             entryCopy.entry_json = answers;
             console.log('ENTRY COPY ', entryCopy);
             try {

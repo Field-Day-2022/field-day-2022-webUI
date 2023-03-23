@@ -22,6 +22,7 @@ import Slide from '@material-ui/core/Slide';
 import FormBuilderToolbar from '../FormBuilderToolbar/FormBuilderToolbar';
 import FormList from '../FormList/FormList';
 import FieldListBuilder from '../FieldListBuilder/FieldListBuilder';
+import { utcDate, utcNow } from '../../util/data/Util.js'
 
 const styles = (theme) => ({
     appBar: {
@@ -180,7 +181,7 @@ class SessionFormPopup extends Component {
 
         const newForm = JSON.parse(
             JSON.stringify({
-                form_id: Math.round(Date.now() / 1000),
+                form_id: utcNow(),
                 form_name,
                 template_json: JSON.stringify({
                     start,
@@ -194,7 +195,7 @@ class SessionFormPopup extends Component {
         if (errors) {
             this.setState({ errors });
         } else {
-            newForm.date_modified = Math.round(Date.now() / 1000);
+            newForm.date_modified = utcNow();
             this.props.onClose(newForm, true);
             this.resetState();
         }
