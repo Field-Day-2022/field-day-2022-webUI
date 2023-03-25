@@ -9,7 +9,8 @@ export const strToNullableBool = (str) => {
 };
 
 export const utcDate = (date) => {
-	return Math.floor(date);
+	// JS gives you ms, we want s
+	return Math.floor(date / 1000);
 }
 
 export const utcNow = () => {
