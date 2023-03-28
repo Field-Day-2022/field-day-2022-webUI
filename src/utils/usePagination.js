@@ -126,13 +126,13 @@ export const usePagination = () => {
         getKey,
         getKeys,
         getLabel,
-        getLabels
+        getLabels,
     };
 };
 
 export const useColumns = () => {
     const { entries, getEntryValue, getKey, getLabels } = usePagination();
-    
+
     const [columns, setColumns] = useState({});
     const [sortedColumn, setSortedColumn] = useState(null);
     const [sortOrder, setSortOrder] = useState('asc');
@@ -179,22 +179,32 @@ export const useColumns = () => {
         });
     };
 
-    return {columns, toggleColumnVisibility, sortedColumn, setSortedColumn, toggleSortOrder, sortedEntries};
+    return {
+        columns,
+        toggleColumnVisibility,
+        sortedColumn,
+        setSortedColumn,
+        toggleSortOrder,
+        sortedEntries,
+    };
 };
 
 export const useSearch = () => {
     const [search, setSearch] = useState('');
     const { getEntryValue, getLabels } = usePagination();
-    const filteredEntries = useCallback((entries, search) => {
-        if (search === '') {
-            return entries;
-        }
-        return entries.filter((entry) => {
-            return getLabels().some((label) => {
-                const entryValue = getEntryValue(entry, label);
-                return entryValue?.toString().toLowerCase().includes(search.toLowerCase());
+    const filteredEntries = useCallback(
+        (entries, search) => {
+            if (search === '') {
+                return entries;
+            }
+            return entries.filter((entry) => {
+                return getLabels().some((label) => {
+                    const entryValue = getEntryValue(entry, label);
+                    return entryValue?.toString().toLowerCase().includes(search.toLowerCase());
+                });
             });
-        });
-    }, [getLabels()]);
+        },
+        [getLabels()]
+    );
     return { search, setSearch, filteredEntries };
 };
