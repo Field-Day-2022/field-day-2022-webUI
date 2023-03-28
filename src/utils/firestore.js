@@ -1,24 +1,24 @@
 import {
     addDoc,
     collection,
+    deleteDoc,
+    doc,
     getDocs,
-    limit,
     orderBy,
     query,
-    startAfter,
-    startAt,
+    updateDoc,
     where,
 } from 'firebase/firestore';
 import { useAtomValue } from 'jotai';
-import { useState } from 'react';
 import { db } from './firebase';
-import { appMode, currentBatchSize, currentProjectName, currentTableName } from './jotai';
-import { notify, Type } from '../components/Notifier';
+import { appMode, currentProjectName } from './jotai';
 
-const getDocsFromCollection = async (collectionName, constraints = []) => {
+export const getDocsFromCollection = async (collectionName, constraints = []) => {
     if (!Array.isArray(constraints)) {
         constraints = [constraints];
     }
+
+    console.log('Loading entries from collection:', collectionName, constraints);
 
     try {
         const currentQuery = query(
@@ -34,7 +34,7 @@ const getDocsFromCollection = async (collectionName, constraints = []) => {
     }
 };
 
-const addDocToCollection = async (collectionName, data) => {
+export const addDocToCollection = async (collectionName, data) => {
     try {
         const docRef = await addDoc(collection(db, collectionName), data);
         console.log(`Document written to collection: ${collectionName} with ID: ${docRef.id}`);
@@ -43,53 +43,28 @@ const addDocToCollection = async (collectionName, data) => {
     }
 };
 
-export const usePagination = () => {
-    const batchSize = useAtomValue(currentBatchSize);
-    const currentProject = useAtomValue(currentProjectName);
-    const currentTable = useAtomValue(currentTableName);
-    const environment = useAtomValue(appMode);
+export const updateDocInCollection = async (collectionName, docId, data) => {
+    try {
+        await updateDoc(doc(db, collectionName, docId), data);
+        console.log('Document successfully updated!');
+    } catch (error) {
+        console.error('Error updating document: ', error);
+    }
+};
 
-    const [documentQueryCursor, setDocumentQueryCursor] = useState();
-    const [queryCursorStack, setQueryCursorStack] = useState([]);
-    const [entries, setEntries] = useState([]);
+export const deleteDocFromCollection = async (collectionName, docId) => {
+    try {
+        await deleteDoc(doc(db, collectionName, docId));
+        console.log('Document successfully deleted!');
+    } catch (error) {
+        console.error('Error removing document: ', error);
+    }
+};
 
-    const collectionName = `${environment === 'test' ? 'Test' : ''}${currentProject}${
-        currentTable === 'Session' ? 'Session' : 'Data'
+export const getCollectionName = (environment, projectName, tableName) => {
+    return `${environment === 'test' ? 'Test' : ''}${projectName}${
+        tableName === 'Session' ? 'Session' : 'Data'
     }`;
-
-    const loadBatch = async (constraints = []) => {
-        if (!Array.isArray(constraints)) {
-            constraints = [constraints];
-        }
-        const whereClause =
-            currentTable !== 'Session' &&
-            where('taxa', '==', currentTable === 'Arthropod' ? 'N/A' : currentTable);
-        whereClause && constraints.push(whereClause);
-
-        constraints.push(limit(batchSize));
-
-        const { docs } = await getDocsFromCollection(collectionName, constraints);
-        const lastVisibleDoc = docs[docs.length - 1];
-        setEntries(docs);
-        setDocumentQueryCursor(lastVisibleDoc);
-    };
-
-    const loadPrevBatch = async () => {
-        if (queryCursorStack.length === 0) {
-            notify(Type.error, 'Unable to go back. This is the first page.');
-            return;
-        }
-        const prevQueryCursor = queryCursorStack[queryCursorStack.length - 1];
-        setQueryCursorStack(queryCursorStack.slice(0, -1));
-        await loadBatch(startAt(prevQueryCursor));
-    };
-
-    const loadNextBatch = async () => {
-        setQueryCursorStack([...queryCursorStack, entries[0]]);
-        await loadBatch(startAfter(documentQueryCursor));
-    };
-
-    return { loadBatch, loadPrevBatch, loadNextBatch, entries, setEntries };
 };
 
 export const useFirestore = () => {
