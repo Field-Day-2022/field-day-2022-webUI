@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, forwardRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { deleteMessageVariant, tableRows } from '../../const/animationVariants';
 import { CheckIcon, DeleteIcon, EditIcon, XIcon } from '../../assets/icons';

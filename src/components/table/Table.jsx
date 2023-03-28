@@ -1,71 +1,85 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { ExportIcon } from '../../assets/icons';
 import { motion } from 'framer-motion';
-import { TableEntry } from './TableEntry';
-import { TableHeading } from './TableHeading';
+import ColumnSelectorButton from '../table/ColumnSelectorButton';
+import { TableEntry } from '../table/TableEntry';
+import { TableHeading } from '../table/TableHeading';
+import { SearchField } from '../forms/Fields';
+import { useColumns, usePagination, useSearch } from '../../utils/usePagination';
 import { tableBody } from '../../const/animationVariants';
-import { usePagination } from '../../utils/usePagination';
 
-export const Table = ({ labels, columns, entries, name }) => {
+export const Table = ({ name }) => {
+    const { getLabels, entries } = usePagination();
+    const { columns, toggleColumnVisibility } = useColumns();
+    const { search, setSearch, filteredEntries } = useSearch();
 
-    const [sortedColumn, setSortedColumn] = useState(null);
-    const [sortDirection, setSortDirection] = useState('asc');
+    const {
+        sortedColumn,
+        sortOrder,
+        setSortedColumn,
+        sortedEntries,
+        toggleSortOrder,
+    } = useColumns();
 
-    const { getEntryValue, getKey } = usePagination();
-
-    const sortedEntries = (entries , column, direction) => {
-        const sortedEntries = [...entries];
-        const key = getKey(column);
-        sortedEntries.sort((a, b) => {
-            if (getEntryValue(a, key) > getEntryValue(b, key)) {
-                return (direction === 'asc') ? 1 : -1;
-            }
-            if (getEntryValue(a, key) < getEntryValue(b, key)) {
-                return (direction === 'asc') ? -1 : 1;
-            }
-            return 0;
-        });
-        return sortedEntries;
+    const onClick = (label) => {
+        if (sortedColumn === label) {
+            toggleSortOrder();
+        } else {
+            setSortedColumn(label);
+        }
     };
 
-    const sortByColumn = (column) => {
-        const newSortDirection = sortDirection === 'asc' ? 'desc' : 'asc'
-        setSortedColumn(column)
-        setSortDirection(newSortDirection);
-    };
+    const tableHeadings = getLabels().filter((label) => columns[label]?.show);
+
+    const tableRows = sortedEntries(filteredEntries(entries, search)).map((entry, index) => (
+        <TableEntry
+            key={entry.id}
+            index={index}
+            entrySnapshot={entry}
+            shownColumns={tableHeadings}
+            tableName={name}
+        />
+    ));
+
+    const tableHeadingsMarkup = tableHeadings.map((label) => (
+        <TableHeading
+            key={label}
+            label={label}
+            active={sortedColumn === label}
+            sortDirection={sortOrder}
+            onClick={() => onClick(label)}
+        />
+    ));
 
     return (
-        <table className="w-full table-auto border-separate border-spacing-0">
-            <thead>
-                <tr>
-                    <TableHeading label="Actions" />
-                    {labels &&
-                        labels.map((label) => (columns[label]?.show) &&
-                            <TableHeading
-                                key={label}
-                                label={label}
-                                active={sortedColumn === label}
-                                sortDirection={sortDirection}
-                                onClick={() => {
-                                    sortByColumn(label)
-                                }}
-                            />)}
-                </tr>
-            </thead>
-            <motion.tbody
-                initial='hidden'
-                animate='visible'
-                variants={tableBody}
-            >
-                {sortedEntries(entries, sortedColumn, sortDirection).map((entry, index) => (
-                    <TableEntry
-                        index={index}
-                        key={entry.id}
-                        entrySnapshot={entry}
-                        shownColumns={[...labels].filter(label => columns[label]?.show)}
-                        tableName={name}
+        <motion.div className="bg-white">
+            <div className="flex justify-between px-5 items-center">
+                <h1 className="heading pt-4">{name} - Entries</h1>
+                <div className="flex px-5 items-center">
+                    <SearchField setField={(e) => setSearch(e)} />
+
+                    <ColumnSelectorButton
+                        labels={getLabels()}
+                        columns={columns}
+                        toggleColumn={toggleColumnVisibility}
                     />
-                ))}
-            </motion.tbody>
-        </table>
+                    <ExportIcon />
+
+                </div>
+            </div>
+            <div className="overflow-auto w-full h-table">
+                <table className="w-full table-auto border-separate border-spacing-0">
+                    <thead>
+                        <tr>
+                            <TableHeading label="Actions" />
+                            {tableHeadingsMarkup}
+                        </tr>
+                    </thead>
+                    <motion.tbody initial="hidden" animate="visible" variants={tableBody}>
+                        {tableRows}
+                    </motion.tbody>
+                </table>
+            </div>
+        </motion.div>
     );
 };

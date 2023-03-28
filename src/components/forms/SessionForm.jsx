@@ -17,7 +17,7 @@ export default function SessionForm({ session, setField, project, setProject }) 
         <div className='flex-co p-4'>
             <div className='flex justify-between'>
                 <h1 className='heading'>Add New Session</h1>
-                <ProjectField setProject={setProject} />
+                <ProjectField project={project} setProject={setProject} />
             </div>
             <div className='flex'>
                 <DateField setField={setField} />

@@ -1,35 +1,26 @@
-// https://firebase.google.com/docs/firestore/query-data/query-cursors
-// https://firebase.google.com/docs/firestore/query-data/order-limit-data
 import { useState, useEffect } from 'react';
 import PageWrapper from '../components/containers/PageWrapper';
 import { Pagination } from '../components/Pagination';
 import TabBar from '../components/TabBar';
-import { TABLE_LABELS } from '../const/tableLabels';
-import { useAtom, useAtomValue } from 'jotai';
-import { currentBatchSize, currentProjectName, currentTableName } from '../utils/jotai';
+import { useAtom } from 'jotai';
+import { currentProjectName, currentTableName } from '../utils/jotai';
 import TableTools from '../components/TableTools';
 import TextRevealIconButton from '../components/TextRevealIconButton';
 import { FormBuilderIcon, ExportIcon, NewDataIcon, TurtleIcon, LizardIcon, MammalIcon, SnakeIcon, ArthropodIcon, AmphibianIcon, SessionIcon } from '../assets/icons';
 import FormBuilderModal from '../modals/FormBuilderModal';
 import ExportModal from '../modals/ExportModal';
 import DataInputModal from '../modals/DataInputModal';
-import TableManager from '../components/tools/TableManager';
 import { usePagination } from '../utils/usePagination';
 import { ProjectField } from '../components/forms/Fields';
+import { Table } from '../components/table/Table';
+
 
 export default function TablePage() {
-    const [labels, setLabels] = useState();
     const [activeTool, setActiveTool] = useState('none');
     const [currentProject, setCurrentProject] = useAtom(currentProjectName);
     const [tableName, setTableName] = useAtom(currentTableName);
-    const batchSize = useAtomValue(currentBatchSize);
 
-    const { entries, setEntries, loadBatch, loadNextBatch, loadPrevBatch } = usePagination();
-
-    useEffect(() => {
-        setLabels(TABLE_LABELS[tableName]);
-        loadBatch();
-    }, [tableName, batchSize, currentProject]);
+    const { loadNextBatch, loadPrevBatch } = usePagination();
 
     const tabsData = [
         { text: 'Turtle', icon: <TurtleIcon /> },
@@ -67,7 +58,8 @@ export default function TablePage() {
                 />
                 <div className='pr-2'>
                     <ProjectField
-                        setProject={(value) => setCurrentProject(value)}
+                        project={currentProject}
+                        setProject={setCurrentProject}
                     />
                 </div>
 
@@ -75,11 +67,8 @@ export default function TablePage() {
             </div>
 
             <div>
-                <TableManager
+                <Table
                     name={tableName}
-                    labels={labels}
-                    entries={entries}
-                    setEntries={setEntries}
                 />
                 <div className="flex justify-between overflow-auto">
                     <TableTools>
