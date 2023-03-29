@@ -1,15 +1,53 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTable } from './useTable';
 
-export const useColumns = (labels) => {
+export const useColumns = (labels, initialEntries) => {
+    
+    const [processedEntries, setProcessedEntries] = useState(initialEntries);
+    const [filter, setFilter] = useState('');
     const [columns, setColumns] = useState({});
-
+    const [sortedColumn, setSortedColumn] = useState(undefined);
+    const [sortDirection, setSortDirection] = useState('asc');
     const { getEntryValue } = useTable();
+    
+    useEffect(() => {
+        setProcessedEntries(initialEntries);
+        setFilter('');
+    }, [initialEntries]);
+
+    const handleFilterChange = useCallback((e) => {
+        setFilter(e.target.value);
+    }, []);
+
+    useEffect(() => {
+        console.log('Sorting and filtering: ', filter, sortedColumn, sortDirection, '')
+        if (filter === '' && sortedColumn === undefined) {
+            setProcessedEntries(initialEntries);
+        } else {
+            setProcessedEntries(
+                sortedEntries(filteredEntries(initialEntries))
+            );
+        }
+    }, [filter, initialEntries, sortedColumn, sortDirection]);
+
+
+    const filteredEntries = useCallback((entries) => {
+        if (filter === '') {
+            return entries;
+        } else {
+            return entries.filter((entry) => {
+                return Object.values(entry).some((value) => {
+                    return value?.toString().toLowerCase().includes(filter.toLowerCase());
+                });
+            });
+        }
+    }, [filter]);
+
 
     useEffect(() => {
         setColumns(
             labels.reduce((acc, label) => {
-                acc[label] = { show: true, sorted: false };
+                acc[label] = { show: true };
                 return acc;
             }, {})
         );
@@ -34,50 +72,23 @@ export const useColumns = (labels) => {
         }));
     }, []);
 
-    const [sortDirection, setSortDirection] = useState('asc');
-
-    const setSortedColumn = useCallback((column) => {
-        setColumns((prevColumns) => {
-            const newColumns = { ...prevColumns };
-            Object.keys(newColumns).forEach((key) => {
-                newColumns[key].sorted = false;
-            });
-            newColumns[column].sorted = true;
-            return newColumns;
-        });
-    }, []);
-
-    const getSortedColumn = useCallback(() => {
-        return Object.keys(columns).find((key) => columns[key].sorted);
-    }, [columns]);
 
     const sortByColumn = useCallback(
         (column) => {
             const newSortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
             setSortedColumn(column);
             setSortDirection(newSortDirection);
-            setColumns((prevColumns) => ({
-                ...prevColumns,
-                [getSortedColumn()]: {
-                    ...prevColumns?.[getSortedColumn()],
-                    sorted: false,
-                },
-                [column]: {
-                    ...prevColumns?.[column],
-                    sorted: true,
-                },
-            }));
         },
-        [sortDirection, getSortedColumn]
+        [sortDirection, sortedColumn]
     );
 
     const sortedEntries = useCallback((entries) => {
         const sortedEntries = [...entries];
         sortedEntries.sort((a, b) => {
-            if (getEntryValue(a, getSortedColumn()) > getEntryValue(b, getSortedColumn())) {
+            if (getEntryValue(a, sortedColumn) > getEntryValue(b, sortedColumn)) {
                 return sortDirection === 'asc' ? 1 : -1;
             }
-            if (getEntryValue(a, getSortedColumn()) < getEntryValue(b, getSortedColumn())) {
+            if (getEntryValue(a, sortedColumn) < getEntryValue(b, sortedColumn)) {
                 return sortDirection === 'asc' ? -1 : 1;
             }
             return 0;
@@ -91,7 +102,8 @@ export const useColumns = (labels) => {
         toggleColumnVisibility,
         sortDirection,
         sortByColumn,
-        getSortedColumn,
         sortedEntries,
+        processedEntries,
+        handleFilterChange,
     };
 };

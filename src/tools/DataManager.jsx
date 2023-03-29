@@ -1,11 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { SearchIcon, ExportIcon } from '../assets/icons';
 import { Table } from '../components/Table';
 import ColumnSelectorButton from '../components/ColumnSelectorButton';
 import { useColumns } from '../utils/useColumns';
-import { useTable } from '../utils/useTable';
-import { useEffect } from 'react';
 
 function SearchBar({ onChange }) {
 
@@ -20,43 +18,16 @@ function SearchBar({ onChange }) {
 const MemoizedSearchBar = React.memo(SearchBar);
 
 export default function DataManager({ name, labels = [], entries = [], setEntries }) {
-    const { columns, getShownColumns, toggleColumnVisibility, sortDirection, sortByColumn, getSortedColumn, sortedEntries } = useColumns(labels);
-    const [entryFilter, setEntryFilter] = useState('');
-
-    const { getEntryValue } = useTable();
-
-    useEffect(() => {
-        console.log('Filtering entries by: ', entryFilter);
-    }, [entryFilter]);
-
-    const handleFilterChange = useCallback((e) => {
-        setEntryFilter(e.target.value);
-    }, []);
-
-    const filteredEntries = useCallback(
-        (entries, filter) => {
-            if (filter === '') {
-                return entries;
-            }
-
-            return entries.filter((entry) => {
-                return labels.some((label) => {
-                    const entryValue = getEntryValue(entry, label);
-                    return entryValue?.toString().toLowerCase().includes(filter.toLowerCase());
-                });
-            });
-        },
-        [labels]
-    );
-
-    const filteredAndSortedEntries = useCallback(
-        (entries, column, direction, search) => {
-            const filtered = filteredEntries(entries, search);
-            const sorted = sortedEntries(filtered, column, direction);
-            return sorted;
-        },
-        [filteredEntries, sortedEntries]
-    );
+    const {
+        columns,
+        getShownColumns,
+        toggleColumnVisibility,
+        sortDirection,
+        sortedColumn,
+        sortByColumn,
+        processedEntries,
+        handleFilterChange
+    } = useColumns(labels, entries);
 
     const removeEntry = useCallback(
         (entry) => {
@@ -87,8 +58,9 @@ export default function DataManager({ name, labels = [], entries = [], setEntrie
                     name={name}
                     labels={labels}
                     columns={getShownColumns(columns)}
-                    entries={filteredAndSortedEntries(entries, getSortedColumn(), sortDirection, entryFilter)}
+                    entries={processedEntries}
                     removeEntry={removeEntry}
+                    sortedColumn={sortedColumn}
                     sortDirection={sortDirection}
                     sortByColumn={sortByColumn}
                 />

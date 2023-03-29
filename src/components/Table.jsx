@@ -4,7 +4,7 @@ import { TableEntry } from './TableEntry';
 import { TableHeading } from './TableHeading';
 import { tableBody } from '../utils/variants';
 
-export const Table = ({ name, labels, columns, entries, removeEntry, sortDirection, sortByColumn }) => {
+export const Table = ({ name, labels, columns, entries, removeEntry, sortDirection, sortByColumn, sortedColumn }) => {
 
     return (
         <table className="w-full table-auto border-separate border-spacing-0">
@@ -17,7 +17,7 @@ export const Table = ({ name, labels, columns, entries, removeEntry, sortDirecti
                             <TableHeading
                                 key={label}
                                 label={label}
-                                active={columns[label]?.sorted}
+                                active={columns[label] == sortedColumn}
                                 sortDirection={sortDirection}
                                 onClick={() => {
                                     sortByColumn(label)
