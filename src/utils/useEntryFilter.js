@@ -17,11 +17,13 @@ export function useEntryFilter(initialEntries) {
         if (filter === '') {
             setFilteredEntries(initialEntries);
         } else {
-            setFilteredEntries(initialEntries.filter((entry) => {
-                return Object.values(entry).some((value) => {
-                    return value?.toString().toLowerCase().includes(filter.toLowerCase());
-                });
-            }));
+            setFilteredEntries(
+                initialEntries.filter((entry) => {
+                    return Object.values(entry).some((value) => {
+                        return value?.toString().toLowerCase().includes(filter.toLowerCase());
+                    });
+                })
+            );
         }
     }, [filter, initialEntries]);
 

@@ -30,7 +30,9 @@ export const usePagination = (updateEntries) => {
     const [queryCursorStack, setQueryCursorStack] = useState([]);
 
     const loadBatch = async (constraints = []) => {
-        if (!Array.isArray(constraints)) { constraints = [constraints]; }
+        if (!Array.isArray(constraints)) {
+            constraints = [constraints];
+        }
 
         const whereClause =
             currentTable !== 'Session' &&

@@ -2,14 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTable } from './useTable';
 
 export const useColumns = (labels, initialEntries) => {
-    
     const [processedEntries, setProcessedEntries] = useState(initialEntries);
     const [filter, setFilter] = useState('');
     const [columns, setColumns] = useState({});
     const [sortedColumn, setSortedColumn] = useState(undefined);
     const [sortDirection, setSortDirection] = useState('asc');
     const { getEntryValue } = useTable();
-    
+
     useEffect(() => {
         setProcessedEntries(initialEntries);
         setFilter('');
@@ -20,29 +19,28 @@ export const useColumns = (labels, initialEntries) => {
     }, []);
 
     useEffect(() => {
-        console.log('Sorting and filtering: ', filter, sortedColumn, sortDirection, '')
+        console.log('Sorting and filtering: ', filter, sortedColumn, sortDirection, '');
         if (filter === '' && sortedColumn === undefined) {
             setProcessedEntries(initialEntries);
         } else {
-            setProcessedEntries(
-                sortedEntries(filteredEntries(initialEntries))
-            );
+            setProcessedEntries(sortedEntries(filteredEntries(initialEntries)));
         }
     }, [filter, initialEntries, sortedColumn, sortDirection]);
 
-
-    const filteredEntries = useCallback((entries) => {
-        if (filter === '') {
-            return entries;
-        } else {
-            return entries.filter((entry) => {
-                return Object.values(entry).some((value) => {
-                    return value?.toString().toLowerCase().includes(filter.toLowerCase());
+    const filteredEntries = useCallback(
+        (entries) => {
+            if (filter === '') {
+                return entries;
+            } else {
+                return entries.filter((entry) => {
+                    return Object.values(entry).some((value) => {
+                        return value?.toString().toLowerCase().includes(filter.toLowerCase());
+                    });
                 });
-            });
-        }
-    }, [filter]);
-
+            }
+        },
+        [filter]
+    );
 
     useEffect(() => {
         setColumns(
@@ -71,7 +69,6 @@ export const useColumns = (labels, initialEntries) => {
             },
         }));
     }, []);
-
 
     const sortByColumn = useCallback(
         (column) => {
