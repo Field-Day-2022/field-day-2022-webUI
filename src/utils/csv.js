@@ -32,4 +32,3 @@ export const getCSVName = (entry, name) => {
         return collectionName.slice(0, -4) + name + ' ' + dateTime;
     }
 };
-
