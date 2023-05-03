@@ -6,7 +6,7 @@ import { SearchField } from '../components/FormFields';
 import useColumns from '../hooks/useColumns';
 import useSearch from '../hooks/useSearch';
 import useFilteredEntries from '../hooks/useFilteredEntries';
-import { QuickExportButton } from '../utils/csv';
+import { QuickExportButton } from '../components/QuickExportButton';
 
 export default function DataManager({ name, labels = [], entries = [], setEntries }) {
   const { columns, toggleColumn } = useColumns(labels);
@@ -25,7 +25,10 @@ export default function DataManager({ name, labels = [], entries = [], setEntrie
                             columns={columns}
                             toggleColumn={toggleColumn}
                         />
-                        <QuickExportButton />
+                        <QuickExportButton 
+                            labels={labels}
+                            entries={entries}
+                        />
                     </div>
 
                 </div>
