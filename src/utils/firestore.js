@@ -10,6 +10,9 @@ import {
     arrayUnion,
     setDoc,
     where,
+    writeBatch,
+    or,
+    getCountFromServer,
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { Type } from '../components/Notifier';
@@ -131,7 +134,7 @@ const updateLizardMetadata = async (operation, operationDataObject) => {
     }
 };
 
-const pushEntryChangesToFirestore = async (entrySnapshot, entryData) => {
+const pushEntryChangesToFirestore = async (entrySnapshot, entryData, editMsg) => {
     if (entryData.taxa === 'Lizard') {
         const lastEditTime = new Date().getTime();
         entryData.lastEdit = lastEditTime;
@@ -140,12 +143,75 @@ const pushEntryChangesToFirestore = async (entrySnapshot, entryData) => {
     let response = [];
     await setDoc(doc(db, entrySnapshot.ref.parent.id, entrySnapshot.id), entryData)
         .then(() => {
-            response = [Type.success, 'Changes successfully written to database!'];
+            response = [Type.success, editMsg || 'Changes successfully written to database!'];
         })
         .catch((e) => {
             response = [Type.error, `Error writing changes to database: ${e}`];
         });
     return response;
+};
+
+const editSessionAndItsEntries = async (sessionSnapshot, sessionData) => {
+    console.log(`editing session and its entries: ${sessionData.toString()}`);
+    let entries = null;
+    if (sessionSnapshot.data().sessionId) {
+        entries = await getDocs(
+            query(
+                collection(
+                    db,
+                    `${sessionSnapshot.ref.parent.id.substr(
+                        0,
+                        sessionSnapshot.ref.parent.id.length - 7
+                    )}Data`
+                ),
+                where('sessionId', '==', sessionSnapshot.data().sessionId)
+            )
+        );
+    } else {
+        entries = await getDocs(
+            query(
+                collection(
+                    db,
+                    `${sessionSnapshot.ref.parent.id.substr(
+                        0,
+                        sessionSnapshot.ref.parent.id.length - 7
+                    )}Data`
+                ),
+                where('sessionDateTime', '==', sessionSnapshot.data().dateTime)
+            )
+        );
+    }
+    const batch = writeBatch(db);
+    let entryCount = 0;
+    entries.docs.forEach((entry) => {
+        entryCount++;
+        batch.update(doc(db, entry.ref.parent.id, entry.id), {
+            dateTime: sessionData.dateTime,
+            sessionDateTime: sessionData.dateTime,
+        });
+    });
+    await batch.commit();
+    return pushEntryChangesToFirestore(
+        sessionSnapshot,
+        sessionData,
+        `Session ${entryCount > 0 && `and its ${entryCount} entries`} successfully changed`
+    );
+};
+
+export const getSessionEntryCount = async (sessionSnapshot) => {
+    const snapshot = await getCountFromServer(
+        query(
+            collection(
+                db,
+                `${sessionSnapshot.ref.parent.id.substr(
+                    0,
+                    sessionSnapshot.ref.parent.id.length - 7
+                )}Data`
+            ),
+            or(where('sessionDateTime', '==', sessionSnapshot.data().dateTime))
+        )
+    );
+    return snapshot.data().count;
 };
 
 const deleteSessionAndItsEntries = async (sessionSnapshot) => {
@@ -158,9 +224,10 @@ const deleteSessionAndItsEntries = async (sessionSnapshot) => {
                     sessionSnapshot.ref.parent.id.length - 7
                 )}Data`
             ),
-            where('sessionDateTime', '==', sessionSnapshot.data().dateTime)
+            or(where('sessionDateTime', '==', sessionSnapshot.data().dateTime))
         )
     );
+    console.log(entries);
     let entryCount = 0;
     entries.docs.forEach((entry) => {
         entryCount++;
@@ -181,6 +248,8 @@ const startEntryOperation = async (operationName, operationData) => {
         return deleteDocumentFromFirestore(operationData.entrySnapshot);
     } else if (operationName === 'deleteSession') {
         return deleteSessionAndItsEntries(operationData.entrySnapshot);
+    } else if (operationName === 'uploadSessionEdits') {
+        return editSessionAndItsEntries(operationData.entrySnapshot, operationData.entryData);
     } else return [Type.error, 'Unknown error occurred'];
 };
 
@@ -257,8 +326,9 @@ const getSessionsByProjectAndYear = async (environment, projectName, year) => {
     const sessions = await getDocs(
         query(
             collection(db, `${environment}${projectName}Session`),
-            where('dateTime', '>=', `${year}-01-01`),
-            where('dateTime', '<=', `${year}-12-31`)
+            where('dateTime', '>=', `${year}/01/01 00:00:00`),
+            where('dateTime', '<=', `${year}/12/31 23:59:59`),
+            orderBy('dateTime', 'desc')
         )
     );
     // console.log('sessions', sessions.docs);
@@ -308,7 +378,7 @@ export const uploadNewSession = async (sessionData, project, environment) => {
 export const uploadNewEntry = async (entryData, project, environment) => {
     let success = false;
     const now = new Date();
-    if (entryData.dateTime === '') entryData.dateTime = getStandardizedDateTimeString(now);
+    if (!entryData.entryId) entryData.entryId = now.getTime();
     const taxa = entryData.taxa;
     if (entryData.taxa === 'Arthropod') {
         if (entryData.aran === '') entryData.aran = '0';
@@ -342,7 +412,9 @@ export const uploadNewEntry = async (entryData, project, environment) => {
     for (const key in entryData) {
         if (entryData[key] === '') entryData[key] = 'N/A';
     }
-    const entryId = `${entryData.site}${taxa}${now.getTime()}`;
+    const entryId = `${entryData.site}${taxa === 'N/A' ? 'Arthropod' : taxa}${
+        entryData.entryId || now.getTime()
+    }`;
     let collectionName = `Test${project.replace(/\s/g, '')}Data`;
     if (environment === 'live') {
         collectionName = `${project.replace(/\s/g, '')}Data`;

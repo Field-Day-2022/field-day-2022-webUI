@@ -35,12 +35,7 @@ export default function NewEntryForm({ setData }) {
   
 
     const activeSessions = sessions.map((session) => {
-        const date = new Date(session.data().dateTime);
-        const month = date.toLocaleString('default', { month: 'long' });
-        const day = date.getDate();
-        const year = date.getFullYear();
-        const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        return `${month} ${day}, ${year} ${time}`;
+        return session.data().dateTime;
     });
 
     const selectedSession = sessions[selectedSessionIndex]?.data() || {
@@ -92,8 +87,8 @@ export default function NewEntryForm({ setData }) {
                                     setSelectedSessionIndex(sessionIndexMap[activeSessions.indexOf(e.target.value)])
                                 }}
                             >
-                                {activeSessions.map((session) => (
-                                    <option key={session} value={session}>{session}</option>
+                                {activeSessions.map((session, index) => (
+                                    <option key={index} value={session}>{session}</option>
                                 ))}
                             </select>
                         }
@@ -186,11 +181,15 @@ const CritterForm = ({ critter, project, session }) => {
 
 
     useEffect(() => {
+        console.log(session);
         let tempEntry = dataObjTemplate
         tempEntry.sessionDateTime = session.dateTime;
+        tempEntry.sessionId = session.sessionId;
+        tempEntry.dateTime = session.dateTime;
         tempEntry.site = session.site;
         tempEntry.array = session.array;
         tempEntry.taxa = critter;
+        tempEntry.year = session.year;
         setEntry(tempEntry);
         hydrateSpeciesArrays(project, critter)
     }, [critter])
@@ -206,48 +205,13 @@ const CritterForm = ({ critter, project, session }) => {
         setSpeciesArrayPromise(getSpeciesCodesForProjectByTaxa(project, taxa));
     }
 
-    const checkRequiredFields = (requiredFields, data) => {
-        for (const field of requiredFields) {
-            if (data[field] === '') {
-                return false;
-            }
-        }
-        return true;
-    }
-
     const verifyForm = (species, data) => {
         console.log({
             species,
             data,
             keys: TABLE_KEYS[species]
         })
-        let success = false;
-        switch(species) {
-            case 'Turtle':
-                success = checkRequiredFields(['sex', 'massG', 'speciesCode', 'fenceTrap'], data);
-                break;
-            case 'Lizard':
-                success = checkRequiredFields(['sex', 'massG', 'speciesCode', 'fenceTrap', 'svlMm', 'vtlMm'], data);
-                break;
-            case 'Arthropod':
-                success = checkRequiredFields(['fenceTrap'], data);
-                break;
-            case 'Mammal':
-                success = checkRequiredFields(['speciesCode', 'fenceTrap', 'massG', 'sex'], data);
-                break;
-            case 'Amphibian': 
-                success = checkRequiredFields(['speciesCode', 'hdBody', 'massG', 'sex'], data);
-                break;
-            case 'Snake':
-                success = checkRequiredFields(['sex', 'massG', 'speciesCode', 'fenceTrap', 'svlMm', 'vtlMm'], data)
-                break;
-            default:
-                break;
-        }
-        if (success === false) {
-            notify(Type.error, 'Fill out required fields')
-        }
-        return success;
+        return true;
     }
 
     const addEntry = async () => {
@@ -261,11 +225,11 @@ const CritterForm = ({ critter, project, session }) => {
     return (
         <div className='flex flex-col space-y-1 items-center'>
             <div className='grid grid-cols-3'>
-                {TABLE_KEYS[critter].map((key) => {
-                    const disabled = session[key] && key !== 'dateTime'
+                {TABLE_KEYS[critter].map((key, index) => {
+                    const disabled = session[key]
                     return (
                         <FormField
-                            key={key}
+                            key={index}
                             disabled={disabled}
                             fieldName={key}
                             layout='vertical'

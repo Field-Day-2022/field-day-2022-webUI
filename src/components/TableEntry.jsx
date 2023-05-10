@@ -5,9 +5,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { tableRows } from '../utils/variants';
 import { CheckIcon, DeleteIcon, EditIcon, XIcon } from '../assets/icons';
 import { getKey, getKeys, getLabel, TABLE_LABELS } from '../const/tableLabels';
-import { startEntryOperation } from '../utils/firestore';
-import { notify } from './Notifier';
+import { getSessionEntryCount, startEntryOperation } from '../utils/firestore';
+import { Type, notify } from './Notifier';
 import { FormField } from './FormFields';
+import { isNumber } from '@syncfusion/ej2-react-spreadsheet';
 
 export const getValue = (entry, column) => {
     if (!entry._document.data.value.mapValue.fields[getKey(column, name)]) {
@@ -29,6 +30,7 @@ export const TableEntry = forwardRef((props, ref) => {
     const [entryData, setEntryData] = useState(entrySnapshot.data());
     const [keys, setKeys] = useState();
     const tableName = useAtomValue(currentTableName);
+    const [deleteMessage, setDeleteMessage] = useState('Are you sure you want to delete this row?')
 
 
     const onEditClickedHandler = () => {
@@ -36,14 +38,21 @@ export const TableEntry = forwardRef((props, ref) => {
         setEntryUIState('editing');
     };
 
-    const onDeleteClickedHandler = () => {
+    const onDeleteClickedHandler = async () => {
         setEntryUIState('deleting');
+        if (entrySnapshot.ref.parent.id.includes('Session')) {
+            const entryCount = await getSessionEntryCount(entrySnapshot);
+            setDeleteMessage(`Are you sure you want to delete this session and its ${entryCount} animal entries?`)
+        }
     };
 
     const onSaveClickedHandler = () => {
         entryUIState === 'editing' &&
             startEntryOperation(
-                'uploadEntryEdits',
+                tableName.includes('Session') ?
+                    'uploadSessionEdits'
+                    :
+                    'uploadEntryEdits',
                 {
                     entrySnapshot,
                     entryData,
@@ -88,6 +97,7 @@ export const TableEntry = forwardRef((props, ref) => {
                 onDeleteClickedHandler={onDeleteClickedHandler}
                 onSaveClickedHandler={onSaveClickedHandler}
                 entryUIState={entryUIState}
+                deleteMessage={deleteMessage}
             />
             {keys && keys.map((key) => (
                 shownColumns.includes(getLabel(key)) && (
@@ -111,14 +121,6 @@ const EntryItem = ({ entrySnapshot, dbKey, entryUIState, setEntryData, entryData
     const BINARY_KEYS = ['noCaptures', 'isAlive', 'dead'];
     const TRUE_KEYS = ['Y', 'y', 'T', 't'];
     const FALSE_KEYS = ['N', 'n', 'F', 'f'];
-
-    useEffect(() => {
-        if (dbKey === 'dateTime') {
-            let tempDate = new Date(entrySnapshot.data()[dbKey]);
-            setDisplayText(tempDate.toLocaleString());
-            setEditable(false);
-        }
-    }, []);
 
     const onChangeHandler = (e) => {
         if (BINARY_KEYS.includes(dbKey)) {
@@ -161,8 +163,7 @@ const EntryItem = ({ entrySnapshot, dbKey, entryUIState, setEntryData, entryData
             <input
                 disabled={disabled}
                 className="text-center"
-                value={dbKey === 'dateTime' ?
-                    displayText : entryData[dbKey] ?? 'N/A'}
+                value={entryData[dbKey] ?? 'N/A'}
                 onChange={(e) => onChangeHandler(e)}
                 size={size}
             />
@@ -176,6 +177,7 @@ const Actions = ({
     onSaveClickedHandler,
     onCancelClickedHandler,
     entryUIState,
+    deleteMessage
 }) => {
     return (
         <td className="border-b border-gray-400 p-2">
@@ -184,7 +186,7 @@ const Actions = ({
                     {entryUIState === 'deleting' && (
                         <motion.div
                             key='deleteMsg'
-                            className="absolute left-8 -top-3 z-10 px-2 rounded-md drop-shadow-xl border-[1px] bg-red-800/10 backdrop-blur border-red-800 shadow-lg  shadow-red-800/25 leading-tight"
+                            className="absolute text-lg left-8 -top-3 z-10 px-2 rounded-md drop-shadow-xl border-[1px] bg-red-800/10 backdrop-blur border-red-800 shadow-lg  shadow-red-800/25 leading-tight"
                             initial={{
                                 left: '-2rem',
                                 opacity: 0,
@@ -196,9 +198,14 @@ const Actions = ({
                             exit={{
                                 left: '-20rem',
                                 opacity: 0,
+                                transition: {
+                                    opacity: {
+                                        duration: .25
+                                    },
+                                }
                             }}
                         >
-                            Are you sure you want to delete this row?
+                            {deleteMessage}
                         </motion.div>
                     )}
                     {entryUIState === 'viewing' &&
